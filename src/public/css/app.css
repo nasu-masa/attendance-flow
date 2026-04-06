@@ -1,0 +1,171 @@
+/* ================================
+    Auth Page (login, register)
+================================ */
+
+.p-login__title {
+    margin-top: 88px;
+    margin-bottom: 64px;
+}
+
+.p-register__link {
+    margin-top: 32px;
+}
+
+.p-register__title {
+    margin-top: 80px;
+    margin-bottom: 48px;
+}
+
+.p-login__link {
+    margin-top: 32px;
+}
+
+/* ================================
+    Verify－Email Page
+================================ */
+
+.p-email {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.p-email__text,
+.p-email__button {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.p-email__text {
+    margin: 240px 0 0;
+    text-align: center;
+}
+
+.p-email__button {
+    margin: 56px auto;
+    width: 257px;
+}
+
+.p-email__button--submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 69px;
+    color: #000;
+    background-color: #d9d9d9;
+    border: 1px solid #000;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.p-email__button--submit:hover {
+    color: #398ac8;
+}
+
+.p-email__button--submit:active {
+    transform: scale(0.98);
+}
+
+.p-email-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-email-link__text {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* ================================
+    Attendance index Page
+================================ */
+
+.p-attendance__card {
+    text-align: center;
+    padding-top: 208px;
+}
+
+.p-attendance__status {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.p-attendance__status--inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 104px;
+    height: 40px;
+    margin: 0 0 24px;
+    font-size: 18px;
+    color: rgb(105, 105, 105, 1);
+    background-color: rgb(200, 200, 200, 1);
+    border-radius: 50px;
+}
+
+.p-attendance__date {
+    margin: 0;
+    font-size: 40px;
+}
+
+.p-attendance__time {
+    font-family: 'Inter', sans-serif;
+    margin: 24px 0 56px;
+    font-size: 80px;
+}
+
+.p-attendance__actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+}
+
+.p-attendance__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 224px;
+    height: 77px;
+    border: none;
+    border-radius: 20px;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.p-attendance__button--start,
+.p-attendance__button--finish {
+    background-color: #000;
+    color: #fff;
+}
+
+.p-attendance__button--break-in,
+.p-attendance__button--break-out {
+    background-color: #fff;
+    color: #000;
+}
+
+.p-attendance__button:hover {
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.p-attendance__button:active {
+    transform: scale(0.95);
+    box-shadow: none;
+}
+
+.p-break-icon {
+    transform: translateY(3px);
+}
+
+.p-attendance__message {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+}
+

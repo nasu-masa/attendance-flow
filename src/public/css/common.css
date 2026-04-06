@@ -1,0 +1,631 @@
+/* ================================
+    Variables
+================================ */
+
+:root {
+    /* Colors */
+    --color-base: #000;
+    --color-string: rgba(115, 115, 115, 1);
+    --color-gray: #ababab;
+    --color-link: #0073CC;
+    --color-error: #e53935;
+    --attendance-border-color: rgb(225, 225, 225, 1);
+
+    /* Font sizes */
+    --font-xxl: 36px;
+    --font-xl: 30px;
+    --font-lg: 26px;
+    --font-md: 24px;
+    --font-sm: 20px;
+    --font-xs: 16px;
+
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 5px;
+}
+
+/* ================================
+    Flash Message
+================================ */
+
+.c-flash {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    max-width: 700px;
+    border: 1px solid transparent;
+    transition: opacity 0.6s ease;
+    text-align: right;
+    opacity: 0.8;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.c-flash__inner {
+    display: inline-block;
+    backdrop-filter: blur(4px);
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    pointer-events: auto;
+}
+
+.c-flash.is-hidden {
+    opacity: 0;
+}
+
+.c-flash--success {
+    background-color: #e6ffed;
+    border-color: #8de0a3;
+    color: #1a7f37;
+    border-radius: 6px;
+}
+
+/* ================================
+    Card
+================================ */
+
+.c-card {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.c-card__title {
+    font-size: var(--font-xxl);
+    margin: 0;
+    text-align: center;
+}
+
+.c-attendance__card {
+    width: 900px;
+    margin: 0 auto;
+}
+
+/* ================================
+    Input
+================================ */
+
+.c-input__label {
+    display: block;
+    height: 36px;
+    margin-bottom: 4px;
+    font-size: var(--font-md);
+    font-weight: bold;
+}
+
+.c-input__field {
+    width: 100%;
+    padding: 0 16px;
+    border: 1px solid var(--color-gray);
+    border-radius: var(--radius-sm);
+}
+
+.c-input--sm {
+    height: 45px;
+    line-height: 45px;
+    font-size: var(--font-sm);
+}
+
+.c-input--md {
+    height: 60px;
+    line-height: 60px;
+    font-size: var(--font-md);
+}
+
+/* ================================
+    Error
+================================ */
+
+.c-error {
+    padding-top: 8px;
+}
+
+.c-error--sm {
+    height: 32px;
+}
+
+.c-error--md {
+    height: 40px;
+}
+
+.c-error--lg {
+    height: 48px;
+}
+
+.c-error--xl {
+    height: 64px;
+}
+
+.c-error__text {
+    color: var(--color-error);
+    font-size: var(--font-md);
+    font-weight: bold;
+    line-height: 20px;
+}
+
+.c-error__text--sm {
+    font-size: var(--font-sm);
+}
+
+.c-error__list {
+    margin: 0;
+    list-style: "*";
+}
+
+.c-error__list li {
+    padding: 8px;
+}
+
+/* ================================
+    Button
+================================ */
+
+.c-button-wrapper {
+    width: 100%;
+    margin-top: 40px;
+}
+
+.c-button {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: var(--font-lg);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.c-button--primary {
+    background-color: var(--color-base);
+    cursor: pointer;
+}
+
+.c-button--primary:hover {
+    opacity: 0.7;
+}
+
+.c-attendance-table__button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 36px;
+}
+
+.c-attendance-table__button-wrapper--spacing {
+    margin-top: 56px;
+}
+
+.c-attendance-table__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+    height: 50px;
+    background-color: var(--color-base);
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    letter-spacing: 0.15em;
+}
+
+.c-attendance-table__button--submit:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.c-attendance-table__button--submit:active {
+    transform: scale(0.95);
+}
+
+.c-attendance-table__button--approve {
+    margin: 0;
+    background-color: rgb(105, 105, 105, 1);
+}
+
+.c-attendance-table__button--export {
+    width: 184px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.c-attendance-table__button--export:hover {
+    background-color: green;
+}
+
+/* ================================
+    Link
+================================ */
+
+.c-link__text {
+    display: block;
+    font-size: var(--font-sm);
+    color: var(--color-link);
+    text-align: center;
+    text-decoration: none;
+}
+
+.c-link__text:hover {
+    opacity: 0.5;
+}
+
+/* ================================
+    Attendance Title
+================================ */
+
+.c-attendance__title {
+    width: 100%;
+    margin: 64px 0 40px;
+    padding-left: 24px;
+    line-height: 1.25;
+    border-left: 8px solid #000;
+    font-size: 30px;
+}
+
+.c-attendance__title--spacing {
+    margin: 128px 0 96px;
+}
+
+/* ================================
+    Table Wrapper
+================================ */
+
+.c-attendance-table__wrapper {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* ================================
+    Table
+================================ */
+
+.c-attendance-table {
+    width: 100%;
+    table-layout: fixed;
+    color: var(--color-string);
+    font-size: var(--font-xs);
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-align: left;
+    background-color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ================================
+    Table Head
+================================ */
+
+.c-attendance-table__head--row th {
+    border-bottom: 3px solid var(--attendance-border-color);
+}
+
+.c-attendance-table__head--row-h42 {
+    height: 42px;
+}
+
+.c-attendance-table__head--row-h43 {
+    height: 43px;
+}
+
+.c-attendance-table__head--row-h45 {
+    height: 45px;
+}
+
+
+.c-attendance-table__head--date,
+.c-attendance-table__data--date {
+    text-indent: 56px;
+    text-align: left;
+}
+
+
+.c-attendance-table__head--user,
+.c-attendance-table__data--user {
+    text-indent: -48px;
+    text-align: center;
+}
+
+
+.c-attendance-table__head--status,
+.c-attendance-table__head--target-date {
+    width: 160px;
+}
+
+.c-attendance-table__head--status,
+.c-attendance-table__data--status {
+    text-align: center;
+}
+
+
+.c-attendance-table__head--name,
+.c-attendance-table__data--name {
+    width: 152px;
+    text-indent: 32px;
+}
+
+
+.c-attendance-table__head--detail {
+    width: 120px;
+}
+
+.c-attendance-table__data--detail-link,
+.c-attendance-table__data--detail-empty {
+    color: var(--color-base);
+    text-decoration: none;
+}
+
+.c-attendance-table__data--detail-link:hover {
+    color: var(--color-link);
+}
+
+/* ================================
+    Table Body
+================================ */
+
+.c-attendance-table__data {
+    background-color: #fff;
+}
+
+.c-attendance-table__data--row td {
+    border-top: 2px solid var(--attendance-border-color);
+}
+
+.c-attendance-table__data--row-h43 {
+    height: 43px;
+}
+
+.c-attendance-table__data--row-h45 {
+    height: 45px;
+}
+
+.c-attendance-table__data--row-h48 {
+    height: 48px;
+}
+
+/* ================================
+    Shared Column Widths
+================================ */
+
+.c-attendance-table__head--date~th:nth-child(n+2):nth-child(-n+6),
+.c-attendance-table__data--date~td:nth-child(n+2):nth-child(-n+6),
+.c-attendance-table__head--user~th:nth-child(n+2):nth-child(-n+6),
+.c-attendance-table__data--user~td:nth-child(n+2):nth-child(-n+6) {
+    width: 136px;
+    text-indent: -64px;
+    text-align: center;
+}
+
+/* ================================
+    Detail Table
+================================ */
+
+.c-attendance-table__row {
+    position: relative;
+}
+
+.c-attendance-table__row:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background-color: var(--attendance-border-color);
+}
+
+.c-attendance-table__row td {
+    text-align: center;
+}
+
+.c-attendance-table__title {
+    width: 320px;
+    text-indent: 64px;
+}
+
+.c-attendance-table__title--name {
+    height: 80px;
+}
+
+.c-attendance-table__title--date,
+.c-attendance-table__title--work {
+    height: 88px;
+}
+
+.c-attendance-table__title--break {
+    height: 96px;
+}
+
+.c-attendance-table__title--remark {
+    height: 104px;
+}
+
+.c-attendance-table__content {
+    width: 320px;
+}
+
+.c-attendance-table__content--name {
+    width: 104px;
+    color: var(--color-base);
+}
+
+.c-attendance-table__separator {
+    text-align: center;
+}
+
+.c-attendance-table__date--year,
+.c-attendance-table__date--md {
+    width: 104px;
+    color: var(--color-base);
+}
+
+.c-attendance__input {
+    width: 104px;
+    height: 24px;
+    letter-spacing: 0.15em;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid var(--attendance-border-color);
+}
+
+.c-attendance-table__range {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.c-attendance__textarea {
+    width: 100%;
+    height: 70px;
+    padding: 10px 14px;
+    letter-spacing: 0.15em;
+    font-weight: bold;
+    border: 1px solid var(--attendance-border-color);
+    resize: none;
+}
+
+/* ================================
+    Detail Table (pending)
+================================ */
+
+.c-attendance__text {
+    width: 104px;
+    text-align: center;
+    color: var(--color-base);
+}
+
+.c-attendance__remark {
+    width: 100%;
+    text-align: left;
+    color: var(--color-base);
+}
+
+.c-attendance__disabled {
+    margin-top: 24px;
+    color: rgba(255, 0, 0, 0.5);
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+}
+
+/* ================================
+    Table (admin)
+================================ */
+
+.c-attendance-table-staff,
+.c-attendance-table__data--staff-name {
+    text-align: center;
+}
+
+.c-attendance-table__head--staff-name,
+.c-attendance-table__data--staff-name {
+    text-indent: 104px;
+}
+
+.c-attendance-table__head--management,
+.c-attendance-table__data--management {
+    text-indent: -64px;
+}
+
+/* ================================
+    Attendance Navigation
+================================ */
+
+.c-attendance-nav__list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    margin-bottom: 48px;
+    padding: 0 24px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.c-attendance-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.c-attendance-nav__item--spacing {
+    padding-bottom: 4px;
+}
+
+.c-attendance-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.c-attendance-nav__link:hover {
+    opacity: 0.5;
+}
+
+.c-attendance-nav__item--calendar {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.c-attendance-nav__link--content {
+    color: var(--color-string);
+    font-weight: bold;
+}
+
+/* ================================
+    Icon
+================================ */
+
+.c-icon {
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.c-icon--calendar {
+    width: 25px;
+    height: 25px;
+}
+
+.c-icon--arrow {
+    width: 20px;
+    height: 15px;
+    opacity: 0.3;
+}
+
+.c-icon--text {
+    padding-right: 5px;
+    text-decoration: none;
+}
+
+/* ================================
+    Tabs
+================================ */
+
+.c-tabs {
+    display: flex;
+    gap: 56px;
+    margin: 0 auto;
+}
+
+.c-tabs__status {
+    margin-left: 64px;
+    padding-top: 32px;
+    color: var(--color-base);
+    text-decoration: none;
+    font-size: var(--font-xs);
+}
+
+.c-tabs__status.active {
+    font-weight: bold;
+}
+
+.c-under-line {
+    width: 100%;
+    margin-bottom: 40px;
+}
