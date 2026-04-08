@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Attendance\Admin;
 
-use Tests\Feature\Attendance\Admin\BaseAdminAttendanceTestCase;
 
 class AdminAttendanceListTest extends BaseAdminAttendanceTestCase
 {

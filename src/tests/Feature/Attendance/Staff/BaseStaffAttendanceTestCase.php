@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Attendance\Staff;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakLog;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 abstract class BaseStaffAttendanceTestCase extends TestCase
 {

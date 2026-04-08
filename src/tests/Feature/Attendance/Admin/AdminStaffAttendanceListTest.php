@@ -3,7 +3,6 @@
 namespace Tests\Feature\Attendance\Admin;
 
 use App\Models\Attendance;
-use Tests\Feature\Attendance\Admin\BaseAdminAttendanceTestCase;
 
 class AdminStaffAttendanceListTest extends BaseAdminAttendanceTestCase
 {

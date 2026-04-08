@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Attendance\Admin;
 
-use App\Models\User;
 use App\Models\Attendance;
 use App\Models\BreakLog;
 use App\Models\CorrectionRequest;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

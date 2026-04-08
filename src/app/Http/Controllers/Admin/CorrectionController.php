@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\CorrectionRequestService;
-use App\Models\User;
 use App\Models\CorrectionRequest;
+use App\Models\User;
 use App\Presenters\AttendanceRequestListPresenter;
 use App\Presenters\CorrectionRequestPresenter;
+use App\Services\CorrectionRequestService;
+use Illuminate\Http\Request;
 
 class CorrectionController extends Controller
 {

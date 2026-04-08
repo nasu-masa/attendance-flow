@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use App\Notifications\CustomVerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
-use App\Models\User;
-use App\Notifications\CustomVerifyEmail;
 
 class EmailVerificationTest extends TestCase
 {

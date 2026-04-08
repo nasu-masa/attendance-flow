@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Attendance;
 
-use Tests\Feature\Attendance\Staff\BaseStaffAttendanceTestCase;
 use App\Models\Attendance;
+use Tests\Feature\Attendance\Staff\BaseStaffAttendanceTestCase;
 
 class ClockInTest extends BaseStaffAttendanceTestCase
 {

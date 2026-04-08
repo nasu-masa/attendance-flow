@@ -1,16 +1,16 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAttendanceController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\CorrectionController;
+
+use App\Http\Controllers\Staff\AttendanceController;
+use App\Http\Controllers\Staff\AuthController;
+use App\Http\Controllers\Staff\CorrectionRequestController;
+
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Staff\AuthController;
-use App\Http\Controllers\Staff\AttendanceController;
-use App\Http\Controllers\Staff\CorrectionRequestController;
-
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\AdminAttendanceController;
-use App\Http\Controllers\Admin\CorrectionController;
 
 // =====================================
 //  一般ユーザー：認証

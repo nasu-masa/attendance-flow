@@ -4,8 +4,8 @@ namespace App\Presenters;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 abstract class BasePresenter
 {

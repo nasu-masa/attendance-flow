@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
+use App\Models\User;
 use App\Presenters\BasePresenter;
 use Illuminate\Support\Facades\DB;
 
