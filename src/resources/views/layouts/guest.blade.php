@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="ja">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>@yield('title')</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title')</title>
 
-        <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/common.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
 
-        @yield('css')
-    </head>
+    @yield('css')
+</head>
 
-    <body>
+<body>
 
-        <header class="l-header">
-            <div class="l-header__container">
-                <div class="l-header__content">
-                    <img src="{{ asset('assets/COACHTECHヘッダーロゴ.png') }}"
-                        alt="COACHTECH"
-                        class="l-header__logo">
-                </div>
+    <header class="l-header">
+        <div class="l-header__container">
+            <div class="l-header__content">
+                <img src="{{ asset('assets/COACHTECHヘッダーロゴ.png') }}"
+                    alt="COACHTECH"
+                    class="l-header__logo">
             </div>
-        </header>
+        </div>
+    </header>
 
-        <main class="l-main">
+    <main class="l-main">
 
-            @yield('content')
+        @yield('content')
 
-        </main>
+    </main>
 
-    </body>
+</body>
 
 </html>

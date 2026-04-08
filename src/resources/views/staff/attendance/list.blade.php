@@ -5,7 +5,9 @@
 @section('content')
 
 <div class="c-attendance__card">
-    <h1 class="c-attendance__title">勤怠一覧</h1>
+    <h1 class="c-attendance__title">
+        勤怠一覧
+    </h1>
 
     <nav class="c-attendance-nav">
         <ul class="c-attendance-nav__list">

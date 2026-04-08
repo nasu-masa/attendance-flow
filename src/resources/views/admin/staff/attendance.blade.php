@@ -109,8 +109,8 @@
     <div class="c-attendance-table__button-wrapper">
         <a href="{{ $csvUrl }}"
             class="c-attendance-table__button c-attendance-table__button--export">
-            <ion-icon name="document-text-outline"
-                class="c-icon--text"></ion-icon>
+
+            <ion-icon name="document-text-outline" class="c-icon--text"></ion-icon>
             CSV出力
         </a>
     </div>

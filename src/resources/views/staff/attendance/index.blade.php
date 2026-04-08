@@ -8,15 +8,7 @@
 
 @section('nav')
 
-@if ($display->isFinished())
-
-@include('partials.finished-nav')
-
-@else
-
-@include('partials.default-nav')
-
-@endif
+@include($display->navView())
 
 @endsection
 
