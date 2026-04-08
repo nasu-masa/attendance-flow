@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
@@ -11,6 +11,7 @@ use App\Presenters\AttendanceListPresenter;
 use App\Presenters\CalendarPresenter;
 use App\Presenters\UIState\AttendanceUIState;
 use App\Presenters\WorkMessagePresenter;
+use App\Http\Controllers\Controller;
 
 class AttendanceController extends Controller
 {

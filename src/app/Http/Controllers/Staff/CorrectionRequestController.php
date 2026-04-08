@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Presenters\AttendanceRequestListPresenter;
@@ -8,6 +8,7 @@ use App\Http\Requests\Staff\CorrectionRequestRequest;
 use App\Services\CorrectionRequestService;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
+use App\Http\Controllers\Controller;
 
 class CorrectionRequestController extends Controller
 {
