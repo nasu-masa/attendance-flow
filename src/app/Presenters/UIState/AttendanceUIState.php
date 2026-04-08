@@ -6,75 +6,55 @@ use App\Models\Attendance;
 
 class AttendanceUIState
 {
-    public function __construct(private ?Attendance $attendance) {}
-
-    /* =====================================
-        状態判定（現在の勤務ステータスを確認）
-    ===================================== */
-
     /**
-     * 勤務外（出勤前）かどうか
+     * 【理由】ビュー側でステータス値や null 判定を直接行わせず、UI 判定ロジックを集約するため。
+     * 【制約】$attendance は null または有効な Attendance インスタンスである必要がある。
+     * 【注意】attendance が null の場合は OUT とみなす UI 仕様を採用しているため、
+     *          初回打刻前の画面表示は OUT と同等になる。
      */
+    public function __construct(private ?Attendance $attendance)
+    {}
+
     public function isOut(): bool
     {
         return $this->attendance?->status === Attendance::STATUS_OUT || is_null($this->attendance);
     }
 
-    /**
-     * 出勤中かどうか
-     */
     public function isWorking(): bool
     {
         return $this->attendance?->status === Attendance::STATUS_WORKING;
     }
 
-    /**
-     * 休憩中かどうか
-     */
     public function isBreak(): bool
     {
         return $this->attendance?->status === Attendance::STATUS_BREAK;
     }
 
-    /**
-     * 退勤済（一日の業務終了）かどうか
-     */
     public function isFinished(): bool
     {
         return $this->attendance?->status === Attendance::STATUS_FINISHED;
     }
 
-    /* ============================================
-        アクション定義
-    ============================================ */
-
     /**
-     * 出勤開始アクション名
+     * 【理由】ビュー側でアクション名をハードコーディングしないため、Attendance モデルの定数を返す役割を持つ。
+     * 【制約】Attendance モデルに対応するアクション定数（ACTION_START など）が正しく定義されている必要がある。
+     * 【注意】アクション名を変更する場合は、モデル側の定数と本メソッド群を合わせて更新すること。
      */
     public function startAction(): string
     {
         return Attendance::ACTION_START;
     }
 
-    /**
-     * 休憩開始アクション名
-     */
     public function breakInAction(): string
     {
         return Attendance::ACTION_BREAK_IN;
     }
 
-    /**
-     * 休憩終了アクション名
-     */
     public function breakOutAction(): string
     {
         return Attendance::ACTION_BREAK_OUT;
     }
 
-    /**
-     * 退勤終了アクション名
-     */
     public function finishAction(): string
     {
         return Attendance::ACTION_FINISH;

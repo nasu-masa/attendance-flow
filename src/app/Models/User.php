@@ -9,7 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-/** ネーミングコンフリクトを避けコードの可読性と正確性を保つため
+/**
+ * ネーミングコンフリクトを避けコードの可読性と正確性を保つため
  *  Illuminate\Foundation\Auth\UserをAuthenticatableとしてインポート
  */
 class User extends Authenticatable implements MustVerifyEmail

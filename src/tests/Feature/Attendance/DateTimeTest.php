@@ -3,6 +3,7 @@
 namespace Tests\Feature\Attendance;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,7 +13,9 @@ class DateTimeTest extends TestCase
 
     public function test_現在の日時情報がUIと同じ形式で出力されている()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => User::ROLE_STAFF,
+        ]);
 
         $this->actingAs($user);
 

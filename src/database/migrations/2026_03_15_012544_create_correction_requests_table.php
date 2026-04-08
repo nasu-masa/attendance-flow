@@ -13,19 +13,17 @@ class CreateCorrectionRequestsTable extends Migration
             $table->foreignId('attendance_id')
                 ->constrained()
                 ->onDelete('cascade');
+
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
 
-            // clock_in / clock_out / break(break1, break2...) / remarks / multiple
             $table->string('request_type');
 
             $table->json('before_value')->nullable();
             $table->json('after_value')->nullable();
 
-            // pending / approved /
             $table->string('status')->default('pending');
-
             $table->text('remarks')->nullable();
 
             $table->foreignId('approved_by')

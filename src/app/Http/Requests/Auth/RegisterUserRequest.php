@@ -13,6 +13,11 @@ class RegisterUserRequest extends FormRequest
         return true;
     }
 
+    /**
+     * 【理由】登録に必要な属性の品質を保証し、不正なメール形式や弱いパスワードを防ぐため。
+     * 【制約】email は DNS 検証を前提とし、password は確認用入力との一致が必須となる。
+     * 【注意】name の最大文字数や email の一意性は UI 表示や登録可否に直接影響する点に注意。
+     */
     public function rules()
     {
         return [
@@ -40,6 +45,11 @@ class RegisterUserRequest extends FormRequest
         ];
     }
 
+    /**
+     * 【理由】登録処理に必要な属性のみを抽出し、後続処理へ安全に渡すため。
+     * 【制約】入力値がバリデーション済みであることを前提に、パスワードをハッシュ化して生成する。
+     * 【注意】返却される配列は登録専用の構造であり、他用途での流用は前提としていない。
+     */
     public function toRegisterAttributes()
     {
         return [

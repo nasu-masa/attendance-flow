@@ -9,10 +9,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceCsvExporter
 {
-    /* ================================
-        Export CSV
-    ================================= */
-
+    /**
+     * 【理由】CSV 出力形式を統一し、ストリーム方式で大規模データでも安定してダウンロードできるようにするため。
+     * 【制約】$user・$attendances・$year・$month が正しい組み合わせであり、勤怠データが日付順で渡されている必要がある。
+     * 【注意】ストリーム出力中に例外が発生すると部分的な CSV が生成される可能性があり、呼び出し側での再送処理ができない点に注意。
+     */
     public function export(User $user, $attendances, $year, $month)
     {
         $fileName = "{$user->name}_{$year}_{$month}_attendance.csv";

@@ -17,10 +17,11 @@ use Carbon\Carbon;
 
 class AdminAttendanceController extends Controller
 {
-    /* ================================
-        PG08：勤怠一覧（管理者）
-    ================================= */
-
+    /**
+     * 【理由】日付入力が欠けても today() を基準に処理できるよう、常に Carbon に正規化している。
+     * 【制約】date クエリは日付文字列であることを前提としており、不正形式の場合は Carbon が例外を投げる。
+     * 【注意】全ユーザー分の勤怠を扱うため、ユーザー数が多い環境ではクエリ負荷とメモリ使用量に注意が必要。
+     */
     public function list(
         Request $request,
         CalendarPresenter $presenter,
@@ -40,11 +41,13 @@ class AdminAttendanceController extends Controller
         return view('admin.attendance.list', compact('display'));
     }
 
-    /* ================================
-        PG09：勤怠詳細（管理者）
-    ================================= */
 
-    public function detail($attendanceId)
+    /**
+     * 【理由】勤怠詳細に必要な関連データを一度に取得し、表示時の追加クエリを避けるため。
+     * 【制約】attendanceId はログインユーザーの権限で参照可能なレコードである必要がある。
+     * 【注意】関連が欠けている場合でも withRelationsForDetails が null を返すため、view 側での null ハンドリングが必要。
+     */
+    public function detail(int $attendanceId)
     {
         $attendance = Attendance::withRelationsForDetails()->findOrFail($attendanceId);
 
@@ -53,14 +56,16 @@ class AdminAttendanceController extends Controller
         return view('admin.attendance.detail', compact('attendance', 'display'));
     }
 
-    /* ================================
-        PG09：勤怠修正（管理者）
-    ================================= */
 
+    /**
+     * 【理由】勤怠修正処理を実行し、成功時と失敗時のユーザーへのフィードバックを統一的に扱うため。
+     * 【制約】$id は修正対象の勤怠レコードであり、リクエスト内容は CorrectAttendanceRequest によって検証済みである必要がある。
+     * 【注意】サービス側で例外が発生した場合は入力値を保持して戻るため、例外メッセージの内容がそのままユーザーに表示される点に注意。
+     */
     public function correction(
         CorrectAttendanceRequest $request,
         AttendanceService $service,
-        $id
+        int $id
     ) {
         try {
             $service->correctAttendance(
@@ -76,10 +81,12 @@ class AdminAttendanceController extends Controller
         return back()->with('success', '勤怠を修正しました');
     }
 
-    /* ================================
-        PG10：スタッフ一覧（管理者）
-    ================================= */
 
+    /**
+     * 【理由】スタッフ権限のユーザーのみを一覧表示するため、role=staff の絞り込み結果をビューに渡している。
+     * 【制約】User モデルに staff スコープが正しく定義されていることが前提となる。
+     * 【注意】関連データを読み込まないため、大量ユーザー環境では後続の表示処理で追加クエリが発生する可能性がある。
+     */
     public function staffList()
     {
         $users = User::staff()->get();
@@ -87,14 +94,16 @@ class AdminAttendanceController extends Controller
         return view('admin.staff.list', compact('users'));
     }
 
-    /* ================================
-        PG11：スタッフ別勤怠一覧（管理者）
-    ================================= */
 
+    /**
+     * 【理由】指定ユーザーがスタッフであることを保証した上で、月次勤怠表示に必要な年月とデータ構築処理をまとめて実行するため。
+     * 【制約】$id は staff スコープで取得可能なユーザーであり、year/month は整数として扱える値である必要がある。
+     * 【注意】年月指定が不正な場合や対象ユーザーに勤怠が存在しない場合でも UseCase 側の戻り値に依存するため、表示側での null ハンドリングが必要。
+     */
     public function staffAttendance(
         Request $request,
         MonthlyAttendanceUseCase $case,
-        $id
+        int $id
     ) {
         $user = User::staff()->where('id', $id)->firstOrFail();
 
@@ -110,14 +119,17 @@ class AdminAttendanceController extends Controller
         ]);
     }
 
-    /* ================================
-        PG12：CSV エクスポート（管理者）
-    ================================= */
 
+    /**
+     * 【理由】CSV 出力に必要な勤怠データをサービス側で一括取得し、出力処理を専用クラスへ委ねるため。
+     * 【制約】$userId・$request->year・$request->month が有効な組み合わせであり、サービス側で取得可能である必要がある。
+     * 【注意】データ取得時の例外はサービス側に依存するため、Controller では例外処理が行われない点に注意。
+     */
     public function exportCsv(
         AttendanceService $service,
         AttendanceCsvExporter $exporter,
-        Request $request, $userId
+        Request $request,
+        int $userId
     )
     {
         [$user, $attendances, $year, $month] = $service->getMonthlyAttendanceForCsv(

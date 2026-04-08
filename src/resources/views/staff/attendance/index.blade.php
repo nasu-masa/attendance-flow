@@ -33,10 +33,14 @@
 
     {{-- 日付と時刻 --}}
     <div class="p-attendance__datetime">
-        <p class="p-attendance__date">
-            {{ $today->isoFormat('YYYY年M月D日(ddd)') }}
+        <p id="js-date" class="p-attendance__date"
+            data-format="{{ $statusLabels->dateFormat() }}">
+            {{ $today->isoFormat($statusLabels->dateFormat()) }}
         </p>
-        <h1 class="p-attendance__time">{{ $time }}</h1>
+        <h1 id="js-time" class="p-attendance__time" ]
+            data-format="{{ $statusLabels->timeFormat() }}">
+            {{ $today->format($statusLabels->timeFormat()) }}
+        </h1>
     </div>
 
     {{-- ボタン --}}
@@ -118,5 +122,10 @@
     </div>
 
 </div>
+
+<script src="{{ asset('js/dayjs.min.js') }}"></script>
+<script src="{{ asset('js/ja.js') }}"></script>
+<script src="{{ asset('js/advancedFormat.js') }}"></script>
+<script src="{{ asset('js/clock.js') }}"></script>
 
 @endsection

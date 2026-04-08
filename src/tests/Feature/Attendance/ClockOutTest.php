@@ -54,7 +54,6 @@ class ClockOutTest extends BaseStaffAttendanceTestCase
 
         $attendance->refresh();
 
-        // 任意の退勤時刻を設定
         $attendance->update([
             'clock_out' => $attendance->clock_in->copy()->addHours(9)->addMinutes(43),
         ]);

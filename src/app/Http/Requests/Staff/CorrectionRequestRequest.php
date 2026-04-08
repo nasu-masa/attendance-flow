@@ -6,6 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CorrectionRequestRequest extends FormRequest
 {
+    /**
+     * 【理由】未入力の時間項目を null に統一し、バリデーションが期待する前提を満たすため。
+     * 【制約】nullable・required_with 判定が null を基準に動作するため、値の正規化が必須となる。
+     * 【注意】空文字や未送信値が混在すると判定が不安定になるため、ここでの統一処理に依存する。
+     */
     protected function prepareForValidation()
     {
         foreach (
@@ -18,18 +23,27 @@ class CorrectionRequestRequest extends FormRequest
                 'break_end_2'
             ] as $field
         ) {
-
             if (!$this->filled($field)) {
                 $this->merge([$field => null]);
             }
         }
     }
 
+    /**
+     * 【理由】この修正リクエストが staff 専用である前提を保証し、不正権限での申請を防ぐため。
+     * 【制約】認証済みユーザーが存在し、ロール判定が可能であることを前提とする。
+     * 【注意】false の場合は自動的に 403 となるため、UI 側での制御は行われない点に注意。
+     */
     public function authorize()
     {
         return auth()->user()?->isStaff() ?? false;
     }
 
+    /**
+     * 【理由】勤怠修正に必要な時間項目の整合性を保ち、矛盾した入力を防ぐため。
+     * 【制約】休憩開始・終了は相互依存するため、required_with によるペア入力が前提となる。
+     * 【注意】時系列制約により clock_in → break → clock_out の順序が崩れるとバリデーションが失敗する。
+     */
     public function rules()
     {
         return [

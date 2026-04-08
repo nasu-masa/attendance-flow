@@ -12,9 +12,6 @@ use App\Models\BreakLog;
 
 class AttendanceSeeder extends Seeder
 {
-    /* ================================
-        欠勤・営業日の判定
-    ================================= */
 
     private function isAbsentDay(Carbon $date)
     {
@@ -23,17 +20,12 @@ class AttendanceSeeder extends Seeder
             ->exists();
     }
 
-    /* ================================
-        申請データの雛形作成
-    ================================= */
-
     private function nextBusinessDay(Carbon $date)
     {
         $holidays = Yasumi::create('Japan', $date->year);
 
         $next = $date->copy()->addDay();
 
-        // 土日・祝日・欠勤日を避けて次の平日を探す
         while (
             $next->isWeekend() ||
             $holidays->isHoliday($next) ||
@@ -44,10 +36,6 @@ class AttendanceSeeder extends Seeder
 
         return $next;
     }
-
-    /* ================================
-        補助メソッド：申請データの雛形作成
-    ================================= */
 
     private function makeBeforeValue(Attendance $attendance)
     {
@@ -64,10 +52,6 @@ class AttendanceSeeder extends Seeder
             'remarks'       => $attendance->remarks,
         ];
     }
-
-    /* ================================
-        メイン実行処理（データ生成）
-    ================================= */
 
     public function run()
     {
@@ -90,34 +74,26 @@ class AttendanceSeeder extends Seeder
 
                 $rand = rand(1, 100);
 
-                /* =========================
-                    勤怠生成
-                ========================== */
-
                 $status   = null;
                 $clockIn  = null;
                 $clockOut = null;
                 $remarks  = null;
 
-                // 土日・祝日は勤怠レコードを作らない
                 if ($date->isWeekend() || $holidays->isHoliday($date)) {
                     continue;
                 }
 
-                // 欠勤（3%）
                 elseif ($rand <= 3) {
                     $status  = 'absent';
                     $remarks = $reasons['absent'][array_rand($reasons['absent'])];
                 }
 
-                // 通常勤務（85%）
                 elseif ($rand <= 88) {
                     $status   = 'normal';
                     $clockIn  = Carbon::parse($date->toDateString() . ' 09:00');
                     $clockOut = Carbon::parse($date->toDateString() . ' 18:00');
                 }
 
-                // 遅刻（5%）
                 elseif ($rand <= 93) {
                     $status   = 'late';
                     $lateMin  = [15, 30, 45, 60][array_rand([15, 30, 45, 60])];
@@ -126,7 +102,6 @@ class AttendanceSeeder extends Seeder
                     $remarks  = $reasons['clock_in'][array_rand($reasons['clock_in'])];
                 }
 
-                // 午前早退（3%）
                 elseif ($rand <= 96) {
                     $status   = 'early_leave_morning';
                     $clockIn  = Carbon::parse($date->toDateString() . ' 09:00');
@@ -134,7 +109,6 @@ class AttendanceSeeder extends Seeder
                     $remarks  = $reasons['clock_out'][array_rand($reasons['clock_out'])];
                 }
 
-                // 午後早退（3%）
                 elseif ($rand <= 99) {
                     $status   = 'early_leave_afternoon';
                     $clockIn  = Carbon::parse($date->toDateString() . ' 09:00');
@@ -142,7 +116,6 @@ class AttendanceSeeder extends Seeder
                     $remarks  = $reasons['clock_out'][array_rand($reasons['clock_out'])];
                 }
 
-                // 午後出勤
                 else {
                     $status   = 'afternoon_work';
                     $clockIn  = Carbon::parse($date->toDateString() . ' 13:00');
@@ -157,10 +130,6 @@ class AttendanceSeeder extends Seeder
                     'clock_out' => $clockOut,
                     'remarks'   => $remarks
                 ]);
-
-                /* ===================================
-                    休憩生成（normal / late のみ）
-                ==================================== */
 
                 if (in_array($status, ['normal', 'late', 'early_leave_afternoon'])) {
 
@@ -186,9 +155,6 @@ class AttendanceSeeder extends Seeder
                     }
                 }
 
-                /* ======================
-                    残業生成
-                ====================== */
 
                 if (in_array($status, ['normal', 'late']) && rand(1, 100) <= 10) {
 
@@ -205,10 +171,6 @@ class AttendanceSeeder extends Seeder
             }
         }
 
-        /* ========================
-            修正申請データの生成
-        ========================= */
-
         $loginUserId = 2;
 
         $attendances = Attendance::where('user_id', $loginUserId)
@@ -222,8 +184,10 @@ class AttendanceSeeder extends Seeder
 
         /* ======================
             pending（3件）
+            【理由】UI の動作確認用に、意図的に pending の申請を 3 件だけ生成するため。
+            【制約】対象はログインユーザー（ID=2）の過去データに限定。
+            【注意】skip/take の件数を変更すると UI の確認データが変わる。
         ====================== */
-
         foreach ($pendingTargets as $attendance) {
 
             if (!in_array($attendance->status, ['normal', 'late', 'early_leave_afternoon'])) {
@@ -252,8 +216,10 @@ class AttendanceSeeder extends Seeder
 
         /* ======================
             approved（3件）
+            【理由】承認済み一覧の UI 確認用に、意図的に approved を 3 件生成するため。
+            【制約】対象はログインユーザー（ID=2）の過去データに限定。
+            【注意】skip/take の件数は UI の確認目的に合わせて調整している。
         ====================== */
-
         foreach ($approvedTargets as $attendance) {
 
             if (!in_array($attendance->status, ['normal', 'late', 'early_leave_afternoon'])) {

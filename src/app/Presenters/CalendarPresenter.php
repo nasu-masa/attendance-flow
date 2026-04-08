@@ -8,10 +8,11 @@ use Illuminate\Support\Collection;
 
 class CalendarPresenter extends BasePresenter
 {
-    /* ================================
-        日ナビゲーション
-    ================================= */
-
+    /**
+     * 【理由】日付操作の基準を Carbon に統一し、文字列形式の違いによるズレを防ぐため。
+     * 【制約】引数は Carbon が解釈可能な日付文字列である必要がある。
+     * 【注意】copy() を使わないと current を破壊してしまい、前後日の計算が誤る可能性がある。
+     */
     public function getDayNavigation(string $date)
     {
         $current = Carbon::parse($date);
@@ -23,10 +24,11 @@ class CalendarPresenter extends BasePresenter
         ];
     }
 
-    /* ================================
-        月ナビゲーション
-    ================================= */
-
+    /**
+     * 【理由】現在月・前月・翌月を一貫した形式で返し、月移動 UI の前提を崩さないため。
+     * 【制約】year・month が Carbon によって正しく日付生成できる値である必要がある。
+     * 【注意】月末処理の影響で日付がずれる可能性があるため、Carbon の仕様に依存する点に注意。
+     */
     public function getMonthNavigation(int $year, int $month)
     {
         $current = Carbon::create($year, $month, 1);
@@ -38,11 +40,11 @@ class CalendarPresenter extends BasePresenter
         ];
     }
 
-    /* ================================
-        月次カレンダー
-        - 実データが無い日は空の Attendance を作る
-    ================================= */
-
+    /**
+     * 【理由】月内の全日付を網羅した構造を作り、欠損日の扱いを統一するため。
+     * 【制約】year・month が有効な日付として Carbon に解釈できる必要がある。
+     * 【注意】勤怠が存在しない日は仮オブジェクトを生成するため、実データとの区別が必要。
+     */
     public function getMonthlyCalendar(Collection $attendances, int $year, int $month)
     {
         $attendances = $attendances->keyBy(fn ($attendance) => $attendance->date->toDateString());
@@ -62,11 +64,11 @@ class CalendarPresenter extends BasePresenter
         return $days;
     }
 
-    /* ================================
-        日次カレンダー（全スタッフ）
-        - 実データが無い場合は空の Attendance を作る
-    ================================= */
-
+    /**
+     * 【理由】勤怠が存在しないユーザーにも空の Attendance を生成し、一覧表示の欠損を防ぐため。
+     * 【制約】users と attendances は user_id をキーに対応している前提で処理される。
+     * 【注意】ユーザー数が多い場合、ループ処理と keyBy によるメモリ使用量が増える点に注意。
+     */
     public function buildDailyCalendar(Collection $users, Collection $attendances, Carbon $date)
     {
         $attendances = $attendances->keyBy('user_id');

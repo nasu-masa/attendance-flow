@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class BasePresenter
 {
-    /* ================================
-        合計時間の整形（分 → H:mm）
-    ================================= */
 
     public static function formatMinutes(?int $minutes): string
     {
@@ -20,11 +17,13 @@ abstract class BasePresenter
         return sprintf('%d:%02d', intdiv($minutes, 60), $minutes % 60);
     }
 
-    /* ================================
-        時刻の整形（Carbon/文字列 → H:i）
-    ================================= */
+    /**
+     * 【理由】文字列・Carbon の両方を受け取り、入力形式の揺れを吸収して統一した時刻フォーマット（H:i）を提供するため。
+     * 【制約】$value は時刻として解釈可能な値であることが望ましいが、null や空文字も許容される。
+     * 【注意】パースに失敗した場合は例外を投げず空文字を返すため、不正値の検知は呼び出し側では行われない。
+     */
 
-    public static function formatTime($value): string
+    public static function formatTime(null|string|Carbon $value): string
     {
         if (!$value) return '';
         try {
@@ -36,11 +35,11 @@ abstract class BasePresenter
         }
     }
 
-    /* ================================
-        表示値の解決（優先順位の制御）
-        old値 > 申請中の値 > 最新の確定値
-    ================================= */
-
+    /**
+     * 【理由】old入力・修正申請・元データの優先順位を統一的に処理するための共通ロジックとして実装している。
+     * 【制約】$attendance は Model / Carbon / 配列のいずれかである必要があり、その他の型は未定義動作となる。
+     * 【注意】$format が 'H:i' の場合は時刻変換が行われるため、不正な値が渡ると空文字や誤変換が発生する可能性がある。
+     */
     public static function resolveValue(string $key, array $after, $attendance, ?string $format = null): string
     {
         $oldValue = old($key);
@@ -65,10 +64,11 @@ abstract class BasePresenter
         return (string)($value ?? '');
     }
 
-    /* ================================
-        文字列の省略（レイアウト崩れ防止）
-    ================================= */
-
+    /**
+     * 【理由】一覧表示で文字列が長すぎる場合のレイアウト崩れを防ぐため、統一した長さに短縮する目的がある。
+     * 【制約】$value が null の場合は空文字として扱う前提で Str::limit が利用される。
+     * 【注意】短縮後の全文表示は別フィールドで保持する設計前提のため、ここでは省略値のみ返す点に注意。
+     */
     public static function limit(?string $value, int $limit = 10): string
     {
         return Str::limit($value ?? '', $limit);

@@ -14,10 +14,8 @@ class AdminAttendanceDetailTest extends BaseAdminAttendanceTestCase
     {
         parent::setUp();
 
-        // スタッフ作成（親クラス）
         $this->staff = $this->makeStaff();
 
-        // 勤怠作成（親クラス）
         $this->attendance = $this->makeAttendance($this->staff, today(), [
             'remarks' => 'テスト備考',
         ]);

@@ -19,8 +19,6 @@ class CreateAttendancesTable extends Migration
             $table->boolean('is_absent')->default(false);
             $table->dateTime('clock_in')->nullable();
             $table->dateTime('clock_out')->nullable();
-
-            // working / break / out / finished
             $table->string('status')->default('out');
             $table->text('remarks')->nullable();
             $table->timestamps();

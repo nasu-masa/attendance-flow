@@ -8,9 +8,6 @@ use Tests\Feature\Attendance\Staff\BaseStaffAttendanceTestCase;
 
 class BreakTest extends BaseStaffAttendanceTestCase
 {
-    /**
-     * 出勤中の勤怠を作成（休憩テスト用）
-     */
     protected function createWorkingAttendance()
     {
         $attendance = $this->makeEmptyAttendance($this->today);
@@ -88,7 +85,6 @@ class BreakTest extends BaseStaffAttendanceTestCase
 
         $this->post(route('staff.attendance.action'), ['action' => Attendance::ACTION_BREAK_IN]);
 
-        // 任意の休憩時間（3:45）を作るために break_end を直接更新する
         $breakLog = BreakLog::where('attendance_id', $attendance->id)->first();
         $breakLog->update([
             'break_end' => $breakLog->break_start->copy()->addHours(3)->addMinutes(45),

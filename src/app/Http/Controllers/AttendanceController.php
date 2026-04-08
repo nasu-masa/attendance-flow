@@ -14,10 +14,11 @@ use App\Presenters\WorkMessagePresenter;
 
 class AttendanceController extends Controller
 {
-    /* ================================
-        PG03：勤怠登録画面
-    ================================= */
-
+    /**
+     * 【理由】ログイン中スタッフの今日の勤怠データを取得または初期化し、表示に必要な Presenter / UIState を構築するため。
+     * 【制約】auth()->id() が有効なスタッフユーザーであること、AttendanceService が正しく動作することが前提となる。
+     * 【注意】未保存の Attendance が返る場合があるため、ビュー側では保存前提の処理を行わないようにする必要がある。
+     */
     public function index(AttendanceService $service)
     {
         $userId = auth()->id();
@@ -32,14 +33,14 @@ class AttendanceController extends Controller
             'statusLabels' => $statusLabels,
             'display'      => $display,
             'today'        => now(),
-            'time'         => now()->format('H:i'),
         ]);
     }
 
-    /* ================================
-        勤怠アクション
-    ================================= */
-
+    /**
+     * 【理由】UIState のアクション名を基準に勤怠処理とメッセージ生成を一元的に振り分けるため。
+     * 【制約】リクエストの action が UIState の定数と一致し、ユーザーが認証済みである必要がある。
+     * 【注意】未知の action は無視されるため、UIState の定数変更時は Presenter・Service と同期が必要。
+     */
     public function action(
         Request $request,
         AttendanceUIState $uiState,
@@ -67,10 +68,11 @@ class AttendanceController extends Controller
         return redirect()->route('staff.attendance.index')->with('message', $message);
     }
 
-    /* ================================
-        PG04：勤怠一覧画面
-    ================================= */
-
+    /**
+     * 【理由】指定年月の勤怠データとカレンダー情報を統合し、一覧表示に必要な構造へ整えるため。
+     * 【制約】ユーザーが認証済みであり、year・month が数値として解釈できることを前提とする。
+     * 【注意】年月が不正でも現在年月で処理されるため、意図しない月が表示される可能性に注意。
+     */
     public function list(
         Request $request,
         AttendanceService $service,
@@ -91,11 +93,12 @@ class AttendanceController extends Controller
         return view('staff.attendance.list', compact('display'));
     }
 
-    /* ================================
-        PG05：勤怠(申請)詳細画面
-    ================================= */
-
-    public function detail($attendanceId)
+    /**
+     * 【理由】ログイン中ユーザー自身の勤怠詳細のみを安全に取得し、表示に必要な情報を揃えるため。
+     * 【制約】attendanceId が本人のデータとして存在し、関連情報が取得可能であることを前提とする。
+     * 【注意】他人の ID や欠損 ID が指定された場合は例外が発生し、画面遷移が中断される点に注意。
+     */
+    public function detail(int $attendanceId)
     {
         $userId = auth()->id();
 

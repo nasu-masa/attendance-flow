@@ -2,14 +2,16 @@
 
 namespace App\Presenters;
 
+use App\Models\CorrectionRequest;
+
 class CorrectionRequestPresenter extends BasePresenter
 {
-
-    /* ================================
-        修正申請の詳細データ作成
-    ================================= */
-
-    public static function make($req)
+    /**
+     * 【理由】修正申請の after_value を優先して整形し、承認画面で必要な情報を統一フォーマットで提供するため。
+     * 【制約】$req は attendance リレーションを持つ CorrectionRequest インスタンスである必要がある。
+     * 【注意】after_value の欠損や不正値は空文字として扱われるため、元データとの整合性は呼び出し側に依存する。
+     */
+    public static function make(CorrectionRequest $req)
     {
         $attendance = $req->attendance;
         $after = $req->after_value ?? [];
@@ -17,8 +19,8 @@ class CorrectionRequestPresenter extends BasePresenter
         return [
             'id' => $req->id,
 
-            'date_year'     => $attendance->date?->isoFormat('YYYY年'),
-            'date_md'       => $attendance->date?->isoFormat('M月D日'),
+            'date_year'     => $attendance->date?->locale('ja')->isoFormat('YYYY年'),
+            'date_md'       => $attendance->date?->locale('ja')->isoFormat('M月D日'),
 
             'clock_in'      => self::formatTime($after['clock_in'] ?? null),
             'clock_out'     => self::formatTime($after['clock_out'] ?? null),

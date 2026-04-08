@@ -24,13 +24,10 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
 
     protected function assertListDisplaysRequests(string $status, string $statusLabel)
     {
-        // スタッフ作成
         $user = $this->makeStaff();
 
-        // 勤怠作成
         $attendance = $this->makeAttendance($user, '2026-04-01');
 
-        // 修正申請作成
         $request = CorrectionRequest::factory()
             ->for($user)
             ->for($attendance)
@@ -48,19 +45,14 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
         $response->assertSee('申請理由');
         $response->assertSee('申請日時');
 
-        // 状態
         $response->assertSee($statusLabel);
 
-        // 名前
         $response->assertSee($user->name);
 
-        // 対象日時
         $response->assertSee('2026/04/01');
 
-        // 申請理由（10文字省略）
         $response->assertSee(Str::limit($request->remarks, 10));
 
-        // 申請日時
         $response->assertSee('2026/04/02');
     }
 

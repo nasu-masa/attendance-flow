@@ -14,10 +14,8 @@ class AdminStaffAttendanceListTest extends BaseAdminAttendanceTestCase
     {
         parent::setUp();
 
-        // スタッフ作成（親クラス）
         $this->staff = $this->makeStaff();
 
-        // URL 生成
         $this->attendanceListUrl = route('admin.attendance.staff', $this->staff->id);
     }
 
