@@ -109,7 +109,7 @@
                             @if ($display['is_pending'])
 
                             <p class="c-attendance__text">
-                                {{ optional($attendance->break1?->break_start)->format('H:i') }}
+                                {{ $display['break_stat_1'] }}
                             </p>
                             @else
                             <input
@@ -124,8 +124,9 @@
 
                             {{-- 終了 --}}
                             @if ($display['is_pending'])
+
                             <p class="c-attendance__text">
-                                {{ optional($attendance->break1?->break_end)->format('H:i') }}
+                                {{ $display['break_stat_2'] }}
                             </p>
                             @else
                             <input

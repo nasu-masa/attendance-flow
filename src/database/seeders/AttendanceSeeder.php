@@ -183,7 +183,7 @@ class AttendanceSeeder extends Seeder
         $approvedTargets = $attendances->skip(4)->take(3);
 
         /* ======================
-            pending（3件）
+            pending（3件程度）
             【理由】UI の動作確認用に、意図的に pending の申請を 3 件だけ生成するため。
             【制約】対象はログインユーザー（ID=2）の過去データに限定。
             【注意】skip/take の件数を変更すると UI の確認データが変わる。
@@ -210,12 +210,12 @@ class AttendanceSeeder extends Seeder
                 'remarks'       => '電車遅延のため',
                 'before_value'  => $before,
                 'after_value'   => $after,
-                'created_at'    => $requestDate->format('Y-m-d H:i:s'),
+                'created_at'    => $requestDate
             ]);
         }
 
         /* ======================
-            approved（3件）
+            approved（3件程度）
             【理由】承認済み一覧の UI 確認用に、意図的に approved を 3 件生成するため。
             【制約】対象はログインユーザー（ID=2）の過去データに限定。
             【注意】skip/take の件数は UI の確認目的に合わせて調整している。
