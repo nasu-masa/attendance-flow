@@ -6,9 +6,6 @@ use App\Models\Attendance;
 
 class AttendanceListTest extends BaseStaffAttendanceTestCase
 {
-    /**
-     * 勤怠一覧に表示される勤怠データを作成
-     */
     protected function makeAttendance($date)
     {
         return $this->makeFullAttendance($date);

@@ -6,9 +6,6 @@ use App\Models\CorrectionRequest;
 
 class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
 {
-    /**
-     * ログインユーザー（$this->user）に紐づく Attendance を作成
-     */
     protected function actingUserWithAttendance()
     {
         $user = $this->user;
@@ -18,9 +15,6 @@ class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
         return [$user, $attendance];
     }
 
-    /**
-     * 修正申請を pending 状態で作成する
-     */
     protected function createPendingRequest()
     {
         [$user, $attendance] = $this->actingUserWithAttendance();

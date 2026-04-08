@@ -109,7 +109,7 @@
                             @if ($display['is_pending'])
 
                             <p class="c-attendance__text">
-                                {{ $display['break_stat_1'] }}
+                                {{ $display['break_start_1'] }}
                             </p>
                             @else
                             <input
@@ -126,7 +126,7 @@
                             @if ($display['is_pending'])
 
                             <p class="c-attendance__text">
-                                {{ $display['break_stat_2'] }}
+                                {{ $display['break_start_2'] }}
                             </p>
                             @else
                             <input

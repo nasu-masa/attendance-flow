@@ -20,3 +20,7 @@ yarn-error.log
 /.vscode
 .DS_Store
 Thumbs.db
+
+# PHP-CS-Fixer
+.php-cs-fixer.cache
+

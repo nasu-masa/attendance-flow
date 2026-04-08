@@ -44,8 +44,8 @@ class AttendanceDetailPresenter extends BasePresenter
             'id'        => $this->attendance->id,
             'user_name' => $this->attendance->user->name,
 
-            'date_year' => $this->attendance->date?->isoFormat('YYYY年') ?? '',
-            'date_md'   => $this->attendance->date?->isoFormat('M月D日') ?? '',
+            'date_year' => $this->attendance->date?->locale('ja')->isoFormat('YYYY年') ?? '',
+            'date_md'   => $this->attendance->date?->locale('ja')->isoFormat('M月D日') ?? '',
 
             'clock_in' => $this->resolveValue(
                 'clock_in', $this->isAdmin
