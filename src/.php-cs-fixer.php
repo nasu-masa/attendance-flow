@@ -3,7 +3,6 @@
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-
 $finder = Finder::create()
     ->in([
         __DIR__ . '/app',
