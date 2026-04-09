@@ -144,85 +144,91 @@
     - 打刻処理：`POST /attendance` (`AttendanceController@action`)
     - 勤怠一覧：`GET /attendance/list` (`AttendanceController@list`)
     - 勤怠詳細：`GET /attendance/detail/{id}` (`AttendanceController@detail`)
+
 - **修正申請**
     - 申請一覧：`GET /stamp_correction_request/list` (`CorrectionRequestController@requestList`)
+
 
 **管理者（Admin）**
 
 `routes/admin.php` で定義。管理者専用 Guard により保護されています。
 
 - **基本管理**
-    - ログイン：`GET /admin/login` (`AdminAuthController@showLogin`)
     - 日次勤怠一覧：`GET /admin/attendance/list` (`AdminAttendanceController@list`)
     - 勤怠詳細：`GET /admin/attendance/{id}` (`AdminAttendanceController@detail`)
+
 - **スタッフ管理**
     - スタッフ一覧：`GET /admin/staff/list` (`AdminAttendanceController@staffList`)
     - 個別月次一覧：`GET /admin/attendance/staff/{id}` (`AdminAttendanceController@staffAttendance`)
+
 - **修正申請対応**
     - 申請一覧：`GET /stamp_correction_request/admin/list` (`CorrectionController@requestList`)
     - 承認・詳細：`GET /stamp_correction_request/approve/{attendance_correct_request_id}` (`CorrectionController@showApprove`)
 
 ---
 
-### ◆ クラス設計・責務分離
+### ◆ コントローラー 一覧 (Controller)
 
-**コントローラー (Controller)**
+| コントローラー名                    | 役割                           |
+| ----------------------------------- | ---------------------------- |
+| AttendanceController.php            | 打刻・一覧・詳細の制御         |
+| CorrectionRequestController.php     | 修正申請の送信・一覧           |
+| AuthController.php                  | 登録・ログイン・メール認証     |
+| Admin/AdminAuthController.php       | 管理者専用ログイン             |
+| Admin/AdminAttendanceController.php | 各種勤怠一覧・詳細の管理       |
+| Admin/CorrectionController.php      | 修正申請の判定・承認           |
 
-| **クライアント** | **コントローラー名** | **役割** |
-| --- | --- | --- |
-| **Staff** | `AttendanceController` | 打刻・一覧・詳細の制御 |
-|  | `CorrectionRequestController` | 修正申請の送信・一覧 |
-|  | `AuthController` | 登録・ログイン・メール認証 |
-| **Admin** | `Admin/AdminAuthController` | 管理者専用ログイン |
-|  | `Admin/AdminAttendanceController` | 各種勤怠一覧・詳細の管理 |
-|  | `Admin/CorrectionController` | 修正申請の判定・承認 |
+### ◆業務ロジック・データ (Service / Model)
 
-**プレゼンター (Presenter / UIState)**
+| モデルファイル名        | 説明                        |
+| --------------------- | --------------------------- |
+| User.php              | 属性・権限管理（Admin/Staff） |
+| Attendance.php        | 1日単位の勤怠レコード         |
+| BreakLog.php          | 休憩時間の記録               |
+| CorrectionRequest.php | 修正申請の差分保持           |
 
-表示ロジックを分離し、Viewの純粋性を保ちます。
+| サービス名                    | 役割（責務）                          |
+| ---------------------------- | ------------------------------------ |
+| AuthService.php              | 会員登録処理                          |
+| AttendanceService.php        | 打刻・勤怠計算の中心処理               |
+| CorrectionRequestService.php | 勤怠修正申請の作成・更新・承認処理      |
 
-- **表示整形 (Presenters)**
-    - `AdminDailyAttendanceListPresenter`: 管理者向け一覧整形
-    - `AttendanceDetailPresenter`: 勤怠詳細（日時・状態）整形
-    - `AttendanceListPresenter`: スタッフ向け一覧整形
-    - `AttendancePresenter`: 合計時間計算・ステータス加工
-    - `BasePresenter`: プレゼンター共通基盤
-    - `CalendarPresenter`: カレンダーナビゲーション構築
-    - `CorrectionRequestPresenter`: 管理者向け申請・承認用整形
-    - `CorrectionRequestListPresenter`: スタッフ向け申請一覧整形
-    - `WorkMessagePresenter`: 状態に応じたメッセージ選定
-- **状態判定 (UIState)**
-    - `AttendanceUIState`: 出勤/休憩/退勤のボタン表示判定
+### ◆ プレゼンター 一覧（ Presenter / UIState）
 
-**業務ロジック・データ (Service / Model)**
+ Presenters（表示用データ整形）
 
-- **サービス (Service)**
-    - `AuthService`: 会員登録処理
-    - `AttendanceService`: 打刻・勤怠計算のコアロジック
-    - `CorrectionRequestService`: 修正申請の作成・承認ワークフロー
-- **モデル (Model)**
-    - `User`: 属性・権限管理（Admin/Staff）
-    - `Attendance`: 1日単位の勤怠レコード
-    - `BreakLog`: 休憩時間の記録
-    - `CorrectionRequest`: 修正申請の差分保持
+| ファイル名                             | 役割（責務）                         |
+| ------------------------------------- | ----------------------------------- |
+| AdminDailyAttendanceListPresenter.php | 管理者向け一覧整形                    |
+| AttendanceDetailPresenter.php         | 勤怠詳細（日時・状態）整形             |
+| AttendanceListPresenter.php           | スタッフ向け一覧整形                  |
+| AttendancePresenter.php               | 合計時間計算・ステータス加工           |
+| BasePresenter.php                     | プレゼンター共通基盤                  |
+| CalendarPresenter.php                 | カレンダーナビゲーション構築           |
+| CorrectionRequestPresenter.php        | 管理者向け申請・承認用整形             |
+| CorrectionRequestListPresenter.php    | スタッフ向け申請一覧整形               |
+| WorkMessagePresenter.php              | 状態に応じたステータスメッセージの選定  |
 
----
+UIState（UI の状態判定）
 
-### ◆ ディレクトリ構成
+| ファイル名             | 役割（責務）                |
+| --------------------- | -------------------------- |
+| AttendanceUIState.php | 勤務/休憩/退勤のボタン表示判定 |
 
-**ビュー (Blade)**
+### ◆ ビュー 一覧（Bladeファイル）
 
-`resources/views/` 下を権限・役割ごとに完全分離しています。
+resources/views/ 下を権限・役割ごとに完全分離しています。
 
-- `staff/`: 一般スタッフ用画面
-- `admin/`: 管理者専用画面（Guardにより保護）
-- `layouts/`: 共通枠（Staff/Admin/Guest 別）
-- `partials/`: 共通コンポーネント（ナビゲーション等）
+staff/: 一般スタッフ用画面
+admin/: 管理者専用画面（Guardにより保護）
+layouts/: 共通枠（Staff/Admin/Guest 別）
+partials/: 共通コンポーネント（ナビゲーション等）
 
-**フロントエンド (CSS / JS)**
+### ◆ フロントエンド (CSS / JS)
 
-- `public/css/`: ページ別および共通コンポーネント (`common.css`, `layout.css` 等)
-- `public/js/`: 状態制御および動的表示用
+public/css/: ページ別および共通コンポーネント (common.css, layout.css 等)
+public/js/: 状態制御および動的表示用
+
 ---
 
 ## ◎ ディレクトリ構成（責務ごとの役割）
@@ -381,7 +387,7 @@ test4343
 1. テスト用 `.env.testing` ファイルの作成とアプリキーの生成
 
 ```bash
-cp .env .env.testing  *# 必要に応じて環境変数を変更*
+cp .env .env.testing  # 必要に応じて環境変数を変更
 ```
 
 ### **.env.testing の変更ポイント**
@@ -561,41 +567,27 @@ ER図では以下のエンティティを定義しています：
 
 ### ◎ 設計経緯・考え方
 
-本アプリの設計は、実装を進めながら 「どの層が何を担当すべきか」
-を段階的に整理していくプロセスで固まりました。
+本アプリは、実装プロセスの中で「各層の責務」を段階的に整理し、保守性の高い構造を追求しました。
 
-・まず、責務の境界を明確にする必要性を感じた
-UI 表示・業務ロジック・データ整形・状態判定が混在すると保守性が落ちるため、
-それぞれを独立した層に分離する方針を採用。
+- Presenter 層の導入（UIロジックの分離）
+Blade の可読性低下を防ぐため、日時の整形やステータス表示などの UI ロジックを Presenter に集約。
 
-・Blade の可読性が低下し始めたため Presenter を導入
-画面に表示するためのデータ整形（日時フォーマット・ステータス表示・文字列加工など）は、
-すべて Presenter 層に集約し、Controller や Model に UI ロジックが混在しないように設計。
+- Service 層の採用（業務ロジックの分離）
+Controller の肥大化を防ぐため、勤怠計算や保存処理等のコアロジックを Service へ移譲。
 
-・Controller が肥大化してきたタイミングで Service 層を採用
-出勤・退勤・休憩などの業務ロジックを Controller から切り離し、
-「Controller＝交通整理」「Service＝業務処理」という役割に分離。
+- UIState の導入（モデルの純粋性保持）
+Model はデータ管理に徹し、勤務中/休憩中といった動的な表示状態の判定は UIState に分離。
 
-・Model に UI ロジックが混ざる問題に気づき、UIState を導入
-Model は “データとその派生値” に限定し、
-勤務中／休憩中などの UI 状態は UIState に切り出して純粋性を保つ。
+- Support 層の追加（汎用処理の独立）
+CSV 出力や共通処理を独立させ、仕様変更時の影響範囲を最小化。
 
-・変更に強い構造を目指して Support 層を追加
-CSV 出力や URL 生成など、UI と無関係な処理を独立させ、
-仕様変更時の影響範囲を最小化。
-
-・認証状態の干渉を防ぐため、マルチガード認証を採用
-管理者とスタッフのログイン状態を完全に独立させるため、Guard と Route ファイルを物理的に分離。
-完成間近での再編となりましたが、実務に即した厳密な権限管理を実現。
-
-このように、
-実装しながら責務の境界を見直し続けた結果、現在の構造に落ち着きました。
+- マルチガード認証（権限の完全分離）
+管理者とスタッフのログイン干渉を防ぐため、Guard と Route を物理的に分離。実務に即した厳密な権限管理を実現。
 
 #### ◆ まとめ
-
-全体として「責務の一元化」を重視し、UI 表示・業務ロジック・状態判定・データ整形が混在しないよう、
-各層が担う役割をできる限り明確に分離しています。これにより、変更に強く、読み手にとって予測可能な構造を実現しています。
+「責務の一元化」を軸に各層の役割をできるだけ明確に分離したことで、変更に強く、読み手にとって予測可能な構造を実現しています。
 読んでいただきありがとうございました。
+
 
 ### ◎ ライセンス
 
