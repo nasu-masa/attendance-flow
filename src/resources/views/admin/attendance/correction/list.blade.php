@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', '申請一覧')
 
@@ -10,12 +10,12 @@
     <div class="c-tabs">
         {{-- タブ --}}
         <a href="?tab=pending"
-            class="c-tabs__status {{ $display['isPending'] ? 'active' : '' }}">
+            class="c-tabs__status {{ $correctionRequestList['isPending'] ? 'active' : '' }}">
             承認待ち
         </a>
 
         <a href="?tab=approved"
-            class="c-tabs__status {{ $display['isApproved'] ? 'active' : '' }}">
+            class="c-tabs__status {{ $correctionRequestList['isApproved'] ? 'active' : '' }}">
             承認済み
         </a>
     </div>
@@ -27,7 +27,7 @@
 
             {{-- ヘッダー --}}
             <thead class="c-attendance-table__head">
-                <tr class="c-attendance-table__head--row c-attendance-table__head--row-h45">
+                <tr class="c-attendance-table__head--row c-attendance-table__head--row-h42">
                     <th class="c-attendance-table__head--status">状態</th>
                     <th class="c-attendance-table__head--name">名前</th>
                     <th class="c-attendance-table__head--target-date">対象日時</th>
@@ -39,8 +39,8 @@
 
             {{-- データ --}}
             <tbody class="c-attendance-table__data">
-                @foreach ($display['requests'] as $req)
-                <tr class="c-attendance-table__data--row c-attendance-table__data--row-h48">
+                @foreach ($correctionRequestList['requests'] as $req)
+                <tr class="c-attendance-table__data--row c-attendance-table__data--row-h43">
 
                     <td class="c-attendance-table__data--status">
                         {{ $req['status_label'] }}
@@ -65,7 +65,9 @@
                     </td>
 
                     <td class="c-attendance-table__data--detail">
-                        <a href="{{ route('staff.attendance.detail', $req['attendance_id']) }}"
+                        <a href="{{ route('admin.attendance.correction.approve.show', [
+                            'attendance_correct_request_id' => $req['request_id']
+                        ]) }}"
                             class="c-attendance-table__data--detail-link">
                             詳細
                         </a>

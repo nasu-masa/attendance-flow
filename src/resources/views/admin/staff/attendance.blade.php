@@ -14,7 +14,7 @@
 
             {{-- 前月 --}}
             <li class="c-attendance-nav__item">
-                <a href="?year={{ $display['prev_year'] }}&month={{ $display['prev_month'] }}"
+                <a href="?year={{ $attendanceList['prev_year'] }}&month={{ $attendanceList['prev_month'] }}"
                     class="c-attendance-nav__link">
                     <div class="c-icon c-icon--arrow"
                         style="background-image:url('/assets/back-arrow.png')"></div>
@@ -28,13 +28,13 @@
                     style="background-image:url('/assets/calendar.png')"></div>
 
                 <p class="c-attendance-nav__item--calendar">
-                    {{ $display['current_month'] }}
+                    {{ $attendanceList['current_month'] }}
                 </p>
             </li>
 
             {{-- 翌月 --}}
             <li class="c-attendance-nav__item">
-                <a href="?year={{ $display['next_year'] }}&month={{ $display['next_month'] }}"
+                <a href="?year={{ $attendanceList['next_year'] }}&month={{ $attendanceList['next_month'] }}"
                     class="c-attendance-nav__link">
                     <span class="c-attendance-nav__link--content">翌月</span>
                     <div class="c-icon c-icon--arrow"
@@ -62,7 +62,7 @@
 
             {{-- データ --}}
             <tbody class="c-attendance-table__data">
-                @foreach ($display['days'] as $day)
+                @foreach ($attendanceList['days'] as $day)
                 <tr class="c-attendance-table__data--row c-attendance-table__data--row-h45">
 
                     <td class="c-attendance-table__data--date">

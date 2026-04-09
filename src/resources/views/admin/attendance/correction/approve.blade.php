@@ -10,7 +10,9 @@
     <form
         class="c-attendance-form"
         method="POST"
-        action="{{ route('admin.request.approve', ['id' => $display['id']]) }}">
+        action="{{ route('admin.attendance.correction.approve', [
+            'attendance_correct_request_id' => $correctionRequestDetail['id']
+        ]) }}">
         @csrf
         @method('PATCH')
 
@@ -37,10 +39,10 @@
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
                             <p class="c-attendance-table__date--year">
-                                {{ $display['date_year'] }}
+                                {{ $correctionRequestDetail['date_year'] }}
                             </p>
                             <p class="c-attendance-table__date--md">
-                                {{ $display['date_md'] }}
+                                {{ $correctionRequestDetail['date_md'] }}
                             </p>
                         </div>
                     </td>
@@ -56,13 +58,13 @@
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
                             <p class="c-attendance__text">
-                                {{ $display['clock_in'] }}
+                                {{ $correctionRequestDetail['clock_in'] }}
                             </p>
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <p class="c-attendance__text">
-                                {{ $display['clock_out'] }}
+                                {{ $correctionRequestDetail['clock_out'] }}
                             </p>
                         </div>
                     </td>
@@ -78,13 +80,13 @@
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
                             <p class="c-attendance__text">
-                                {{ $display['break_start_1'] }}
+                                {{ $correctionRequestDetail['break_start_1'] }}
                             </p>
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <p class="c-attendance__text">
-                                {{ $display['break_end_1'] }}
+                                {{ $correctionRequestDetail['break_end_1'] }}
                             </p>
                         </div>
                     </td>
@@ -100,13 +102,13 @@
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
                             <p class="c-attendance__text">
-                                {{ $display['break_start_2'] }}
+                                {{ $correctionRequestDetail['break_start_2'] }}
                             </p>
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <p class="c-attendance__text">
-                                {{ $display['break_end_2'] }}
+                                {{ $correctionRequestDetail['break_end_2'] }}
                             </p>
                         </div>
                     </td>
@@ -121,7 +123,7 @@
                     </th>
                     <td class="c-attendance-table__content">
                         <p class="c-attendance__remark">
-                            {{ $display['remarks'] }}
+                            {{ $correctionRequestDetail['remarks'] }}
                         </p>
                     </td>
                 </tr>
@@ -130,7 +132,7 @@
         </div>
 
         {{-- ボタン --}}
-        @if ($display['is_pending'])
+        @if ($correctionRequestDetail['is_pending'])
         <div class="c-attendance-table__button-wrapper
                     c-attendance-table__button-wrapper--spacing">
             <button

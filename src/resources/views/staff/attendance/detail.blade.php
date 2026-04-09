@@ -29,7 +29,7 @@
                     </th>
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__content--name">
-                            {{ $display['user_name'] }}
+                            {{ $attendanceDetail['user_name'] }}
                         </div>
                     </td>
                 </tr>
@@ -42,10 +42,10 @@
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
                             <p class="c-attendance-table__date--year">
-                                {{ $display['date_year'] }}
+                                {{ $attendanceDetail['date_year'] }}
                             </p>
                             <p class="c-attendance-table__date--md">
-                                {{ $display['date_md'] }}
+                                {{ $attendanceDetail['date_md'] }}
                             </p>
                         </div>
                     </td>
@@ -62,9 +62,9 @@
                         <div class="c-attendance-table__range">
 
                             {{-- 出勤 --}}
-                            @if ($display['is_pending'])
+                            @if ($attendanceDetail['is_pending'])
                             <p class="c-attendance__text">
-                                {{ $display['clock_in'] }}
+                                {{ $attendanceDetail['clock_in'] }}
                             </p>
                             @else
                             <input
@@ -72,15 +72,15 @@
                                 id="clock_in"
                                 name="clock_in"
                                 class="c-attendance__input"
-                                value="{{ $display['clock_in'] }}">
+                                value="{{ $attendanceDetail['clock_in'] }}">
                             @endif
 
                             <span class="c-attendance-table__separator">~</span>
 
                             {{-- 退勤 --}}
-                            @if ($display['is_pending'])
+                            @if ($attendanceDetail['is_pending'])
                             <p class="c-attendance__text">
-                                {{ $display['clock_out'] }}
+                                {{ $attendanceDetail['clock_out'] }}
                             </p>
                             @else
                             <input
@@ -88,7 +88,7 @@
                                 id="clock_out"
                                 name="clock_out"
                                 class="c-attendance__input"
-                                value="{{ $display['clock_out'] }}">
+                                value="{{ $attendanceDetail['clock_out'] }}">
                             @endif
 
                         </div>
@@ -106,10 +106,10 @@
                         <div class="c-attendance-table__range">
 
                             {{-- 開始 --}}
-                            @if ($display['is_pending'])
+                            @if ($attendanceDetail['is_pending'])
 
                             <p class="c-attendance__text">
-                                {{ $display['break_start_1'] }}
+                                {{ $attendanceDetail['break_start_1'] }}
                             </p>
                             @else
                             <input
@@ -117,16 +117,16 @@
                                 id="break_start_1"
                                 name="break_start_1"
                                 class="c-attendance__input"
-                                value="{{ $display['break_start_1'] }}">
+                                value="{{ $attendanceDetail['break_start_1'] }}">
                             @endif
 
                             <span class="c-attendance-table__separator">~</span>
 
                             {{-- 終了 --}}
-                            @if ($display['is_pending'])
+                            @if ($attendanceDetail['is_pending'])
 
                             <p class="c-attendance__text">
-                                {{ $display['break_start_2'] }}
+                                {{ $attendanceDetail['break_end_1'] }}
                             </p>
                             @else
                             <input
@@ -134,7 +134,7 @@
                                 id="break_end_1"
                                 name="break_end_1"
                                 class="c-attendance__input"
-                                value="{{ $display['break_end_1'] }}">
+                                value="{{ $attendanceDetail['break_end_1'] }}">
                             @endif
 
                         </div>
@@ -142,7 +142,7 @@
                 </tr>
 
                 {{-- 休憩2 --}}
-                @if (!$display['is_pending'] || !empty($display['break_start_2']))
+                @if (!$attendanceDetail['is_pending'] || !empty($attendanceDetail['break_start_2']))
                 <tr class="c-attendance-table__row">
                     <th class="c-attendance-table__title c-attendance-table__title--break">
                         <label for="break_start_2" class="c-attendance__label">
@@ -153,9 +153,9 @@
                         <div class="c-attendance-table__range">
 
                             {{-- 開始 --}}
-                            @if ($display['is_pending'])
+                            @if ($attendanceDetail['is_pending'])
                             <p class="c-attendance__text">
-                                {{ $display['break_start_2'] }}
+                                {{ $attendanceDetail['break_start_2'] }}
                             </p>
                             @else
                             <input
@@ -163,15 +163,15 @@
                                 id="break_start_2"
                                 name="break_start_2"
                                 class="c-attendance__input"
-                                value="{{ $display['break_start_2'] }}">
+                                value="{{ $attendanceDetail['break_start_2'] }}">
                             @endif
 
                             <span class="c-attendance-table__separator">~</span>
 
                             {{-- 終了 --}}
-                            @if ($display['is_pending'])
+                            @if ($attendanceDetail['is_pending'])
                             <p class="c-attendance__text">
-                                {{ $display['break_end_2'] }}
+                                {{ $attendanceDetail['break_end_2'] }}
                             </p>
                             @else
                             <input
@@ -179,7 +179,7 @@
                                 id="break_end_2"
                                 name="break_end_2"
                                 class="c-attendance__input"
-                                value="{{ $display['break_end_2'] }}">
+                                value="{{ $attendanceDetail['break_end_2'] }}">
                             @endif
 
                         </div>
@@ -196,15 +196,15 @@
                     </th>
                     <td class="c-attendance-table__content">
 
-                        @if ($display['is_pending'])
+                        @if ($attendanceDetail['is_pending'])
                         <p class="c-attendance__remark">
-                            {{ $display['remarks'] }}
+                            {{ $attendanceDetail['remarks'] }}
                         </p>
                         @else
                         <textarea
                             id="remarks"
                             name="remarks"
-                            class="c-attendance__textarea">{{ $display['remarks'] }}</textarea>
+                            class="c-attendance__textarea">{{ $attendanceDetail['remarks'] }}</textarea>
                         @endif
                     </td>
                 </tr>
@@ -213,7 +213,7 @@
         </div>
 
         {{-- ボタン --}}
-        @if ($display['is_pending'])
+        @if ($attendanceDetail['is_pending'])
         <p class="c-attendance__disabled">
             *承認待ちのため修正はできません。
         </p>

@@ -10,7 +10,7 @@
 
 <div class="c-attendance__card">
     <h1 class="c-attendance__title">
-        {{ $display['current_date'] }} の勤怠
+        {{ $dailyAttendanceList['current_date'] }} の勤怠
     </h1>
 
     <nav class="c-attendance-nav">
@@ -18,7 +18,7 @@
 
             {{-- 前日 --}}
             <li class="c-attendance-nav__item">
-                <a href="?date={{ $display['prev_date'] }}" class="c-attendance-nav__link">
+                <a href="?date={{ $dailyAttendanceList['prev_date'] }}" class="c-attendance-nav__link">
                     <div class="c-icon c-icon--arrow"
                         style="background-image:url('/assets/back-arrow.png')"></div>
                     <span class="c-attendance-nav__link--content">前日</span>
@@ -31,13 +31,13 @@
                     style="background-image:url('/assets/calendar.png')">
                 </div>
                 <p class="c-attendance-nav__item--calendar">
-                    {{ $display['current_date_slash'] }}
+                    {{ $dailyAttendanceList['current_date_slash'] }}
                 </p>
             </li>
 
             {{-- 翌日 --}}
             <li class="c-attendance-nav__item">
-                <a href="?date={{ $display['next_date'] }}" class="c-attendance-nav__link">
+                <a href="?date={{ $dailyAttendanceList['next_date'] }}" class="c-attendance-nav__link">
                     <span class="c-attendance-nav__link--content">翌日</span>
                     <div class="c-icon c-icon--arrow"
                         style="background-image:url('/assets/forward-arrow.png')"></div>
@@ -64,7 +64,7 @@
 
             {{-- データ --}}
             <tbody class="c-attendance-table__data">
-                @foreach ($display['attendances'] as $attendance)
+                @foreach ($dailyAttendanceList['attendances'] as $attendance)
                 <tr class="c-attendance-table__data--row c-attendance-table__data--row-h45">
 
                     <td class="c-attendance-table__data--user">

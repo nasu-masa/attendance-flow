@@ -36,8 +36,8 @@
                     </th>
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
-                            <p class="c-attendance-table__date--year">{{ $display['date_year'] }}</p>
-                            <p class="c-attendance-table__date--md">{{ $display['date_md'] }}</p>
+                            <p class="c-attendance-table__date--year">{{ $attendanceDetail['date_year'] }}</p>
+                            <p class="c-attendance-table__date--md">{{ $attendanceDetail['date_md'] }}</p>
                         </div>
                     </td>
                 </tr>
@@ -54,13 +54,13 @@
 
                             <input type="text" id="clock_in" name="clock_in"
                                 class="c-attendance__input"
-                                value="{{ $display['clock_in'] }}">
+                                value="{{ $attendanceDetail['clock_in'] }}">
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <input type="text" id="clock_out" name="clock_out"
                                 class="c-attendance__input"
-                                value="{{ $display['clock_out'] }}">
+                                value="{{ $attendanceDetail['clock_out'] }}">
 
                         </div>
                     </td>
@@ -78,13 +78,13 @@
 
                             <input type="text" id="break_start_1" name="break_start_1"
                                 class="c-attendance__input"
-                                value="{{ $display['break_start_1'] }}">
+                                value="{{ $attendanceDetail['break_start_1'] }}">
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <input type="text" id="break_end_1" name="break_end_1"
                                 class="c-attendance__input"
-                                value="{{ $display['break_end_1'] }}">
+                                value="{{ $attendanceDetail['break_end_1'] }}">
 
                         </div>
                     </td>
@@ -102,13 +102,13 @@
 
                             <input type="text" id="break_start_2" name="break_start_2"
                                 class="c-attendance__input"
-                                value="{{ $display['break_start_2'] }}">
+                                value="{{ $attendanceDetail['break_start_2'] }}">
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <input type="text" id="break_end_2" name="break_end_2"
                                 class="c-attendance__input"
-                                value="{{ $display['break_end_2'] }}">
+                                value="{{ $attendanceDetail['break_end_2'] }}">
 
                         </div>
                     </td>
@@ -123,7 +123,7 @@
                     </th>
                     <td class="c-attendance-table__content">
                         <textarea id="remarks" name="remarks"
-                            class="c-attendance__textarea">{{ $display['remarks'] }}</textarea>
+                            class="c-attendance__textarea">{{ $attendanceDetail['remarks'] }}</textarea>
                     </td>
                 </tr>
 

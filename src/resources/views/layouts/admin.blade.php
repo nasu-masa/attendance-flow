@@ -42,7 +42,7 @@
                     </li>
 
                     <li class="c-nav__item">
-                        <a href="{{ route('admin.request.list') }}" class="c-nav__link c-nav__link--spaced">
+                        <a href="{{ route('admin.attendance.correction.list') }}" class="c-nav__link c-nav__link--spaced">
                             申請一覧
                         </a>
                     </li>

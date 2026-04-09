@@ -8,7 +8,7 @@
 
 @section('nav')
 
-@include($display->navView())
+@include($workStatus->navView())
 
 @endsection
 
@@ -39,11 +39,11 @@
     <div class="p-attendance__actions">
 
         {{-- 出勤前 --}}
-        @if ($display->isOut())
+        @if ($workStatus->isOut())
 
         <form method="POST" action="{{ route('staff.attendance.action') }}">
             @csrf
-            <input type="hidden" name="action" value="{{ $display->startAction() }}">
+            <input type="hidden" name="action" value="{{ $workStatus->startAction() }}">
 
             <button type="submit"
                 class="p-attendance__button p-attendance__button--start">
@@ -52,11 +52,11 @@
         </form>
 
         {{-- 勤務中 --}}
-        @elseif ($display->isWorking())
+        @elseif ($workStatus->isWorking())
 
         <form method="POST" action="{{ route('staff.attendance.action') }}">
             @csrf
-            <input type="hidden" name="action" value="{{ $display->finishAction() }}">
+            <input type="hidden" name="action" value="{{ $workStatus->finishAction() }}">
 
             <button type="submit"
                 class="p-attendance__button p-attendance__button--finish">
@@ -67,7 +67,7 @@
 
         <form method="POST" action="{{ route('staff.attendance.action') }}">
             @csrf
-            <input type="hidden" name="action" value="{{ $display->breakInAction() }}">
+            <input type="hidden" name="action" value="{{ $workStatus->breakInAction() }}">
 
             <button type="submit"
                 class="p-attendance__button p-attendance__button--break-in">
@@ -77,11 +77,11 @@
         </form>
 
         {{-- 休憩中 --}}
-        @elseif ($display->isBreak())
+        @elseif ($workStatus->isBreak())
 
         <form method="POST" action="{{ route('staff.attendance.action') }}">
             @csrf
-            <input type="hidden" name="action" value="{{ $display->breakOutAction() }}">
+            <input type="hidden" name="action" value="{{ $workStatus->breakOutAction() }}">
 
             <button type="submit"
                 class="p-attendance__button p-attendance__button--break-out">
@@ -91,7 +91,7 @@
         </form>
 
         {{-- 退勤後 --}}
-        @elseif ($display->isFinished())
+        @elseif ($workStatus->isFinished())
 
         <p class="p-attendance__message">
             お疲れ様でした。
@@ -101,7 +101,7 @@
 
         <form method="POST" action="{{ route('staff.attendance.action') }}">
             @csrf
-            <input type="hidden" name="action" value="{{ $display->startAction() }}">
+            <input type="hidden" name="action" value="{{ $workStatus->startAction() }}">
 
             <button type="submit"
                 class="p-attendance__button p-attendance__button--start">
