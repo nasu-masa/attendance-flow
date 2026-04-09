@@ -25,28 +25,28 @@
 
 ### ① スタッフ：出勤（打刻）画面
 
-![打刻画面](docs/images/01_attendance_screen.png)
+![打刻画面](docs/attendance_images/01_attendance_screen.png)
 
 - スタッフが出勤・休憩・退勤を行うメイン画面です。
 - 現在のステータスを UIState で一貫管理し、状況に応じて適切なボタン表示へ動的に切り替わる構造にしています。
 
 ### ② スタッフ：勤怠詳細（修正申請フォーム）
 
-![勤怠詳細](docs/images/02_attendance_detail_screen.png)
+![勤怠詳細](docs/attendance_images/02_attendance_detail_screen.png)
 
 - 1日分の勤怠詳細を確認し、必要に応じて修正申請を行う画面です。
 - 現在の申請ステータスの判定ロジックを画面表示から分離して整理することで、メンテナンス性の高い構造にしています。
 
 ### ③ 管理者：日次勤怠一覧
 
-![日次勤怠一覧](docs/images/03_admin_daily_attendance_list_screen.png)
+![日次勤怠一覧](docs/attendance_images/03_admin_daily_attendance_list_screen.png)
 
 - 全スタッフの当日の勤怠状況をリアルタイムに確認できる管理者専用画面です。
 - 管理者専用 Guard による厳密な認証を行い堅牢な設計にしています。
 
 ### ④ 管理者：修正申請承認画面
 
-![修正申請承認画面](docs/images/04_admin_correction_request_list_screen.png)
+![修正申請承認画面](docs/attendance_images/04_admin_correction_request_list_screen.png)
 
 - スタッフからの修正申請を一覧管理し、承認フローを実行する画面です。
 - before/after 形式の比較表示や、承認完了時に申請内容を勤怠データへ即時反映する実務的なロジックを再現しています。
@@ -217,17 +217,17 @@ UIState（UI の状態判定）
 
 ### ◆ ビュー 一覧（Bladeファイル）
 
-resources/views/ 下を権限・役割ごとに完全分離しています。
+resources/views/ 下を権限・役割ごとに分離しています。
 
-staff/: 一般スタッフ用画面
-admin/: 管理者専用画面（Guardにより保護）
-layouts/: 共通枠（Staff/Admin/Guest 別）
-partials/: 共通コンポーネント（ナビゲーション等）
+- staff/: 一般スタッフ用画面
+- admin/: 管理者専用画面（Guardにより保護）
+- layouts/: 共通枠（Staff/Admin/Guest 別）
+- partials/: 共通コンポーネント（ナビゲーション等）
 
 ### ◆ フロントエンド (CSS / JS)
 
-public/css/: ページ別および共通コンポーネント (common.css, layout.css 等)
-public/js/: 状態制御および動的表示用
+- public/css/: ページ別および共通コンポーネント (common.css, layout.css 等)
+- public/js/: 状態制御および動的表示用
 
 ---
 
