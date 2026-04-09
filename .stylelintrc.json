@@ -1,0 +1,39 @@
+{
+    "extends": ["stylelint-config-standard"],
+    "plugins": ["stylelint-order"],
+    "rules": {
+        "selector-class-pattern": "^[a-z0-9\\-\\_]+$",
+        "no-descending-specificity": null,
+        "order/properties-order": [
+            [
+                "display",
+                "position",
+                "top",
+                "right",
+                "bottom",
+                "left",
+
+                "flex",
+                "flex-direction",
+                "justify-content",
+                "align-items",
+
+                "width",
+                "height",
+                "margin",
+                "padding",
+
+                "font-size",
+                "font-weight",
+                "line-height",
+                "text-align",
+                "color",
+
+                "background",
+                "border",
+                "border-radius"
+            ],
+            { "unspecified": "bottomAlphabetical" }
+        ]
+    }
+}

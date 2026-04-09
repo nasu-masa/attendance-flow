@@ -27,12 +27,12 @@ class AttendanceController extends Controller
         $attendance = $service->getOrInitTodayAttendance($userId);
 
         $statusLabels = new AttendancePresenter($attendance);
-        $display      = new AttendanceUIState($attendance);
+        $workStatus   = new AttendanceUIState($attendance);
 
         return view('staff.attendance.index', [
             'attendance'   => $attendance,
             'statusLabels' => $statusLabels,
-            'display'      => $display,
+            'workStatus'   => $workStatus,
             'today'        => now(),
         ]);
     }
@@ -47,8 +47,7 @@ class AttendanceController extends Controller
         AttendanceUIState $uiState,
         AttendanceService $service,
         WorkMessagePresenter $presenter
-        )
-    {
+    ) {
         $action = $request->input('action');
         $userId = auth()->id();
 
@@ -60,13 +59,13 @@ class AttendanceController extends Controller
             default => null,
         };
 
-        $message = $presenter->handleAction($action, $uiState);
+        $greeting = $presenter->handleAction($action, $uiState);
 
-        if ($message) {
-            session()->flash('greeting', $message);
+        if ($greeting) {
+            session()->flash('greeting', $greeting);
         }
 
-        return redirect()->route('staff.attendance.index')->with('message', $message);
+        return redirect()->route('staff.attendance.index')->with('message', $greeting);
     }
 
     /**
@@ -89,9 +88,9 @@ class AttendanceController extends Controller
         $days = $presenter->getMonthlyCalendar($attendances, $year, $month);
         $nav  = $presenter->getMonthNavigation($year, $month);
 
-        $display = AttendanceListPresenter::make($nav, $days);
+        $attendanceList = AttendanceListPresenter::make($nav, $days);
 
-        return view('staff.attendance.list', compact('display'));
+        return view('staff.attendance.list', compact('attendanceList'));
     }
 
     /**
@@ -108,8 +107,8 @@ class AttendanceController extends Controller
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        $display = AttendanceDetailPresenter::make($attendance);
+        $attendanceDetail = AttendanceDetailPresenter::make($attendance);
 
-        return view('staff.attendance.detail', compact('attendance', 'display'));
+        return view('staff.attendance.detail', compact('attendance', 'attendanceDetail'));
     }
 }

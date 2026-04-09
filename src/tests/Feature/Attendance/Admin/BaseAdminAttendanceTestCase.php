@@ -20,7 +20,7 @@ abstract class BaseAdminAttendanceTestCase extends TestCase
         parent::setUp();
 
         $this->admin = User::factory()->admin()->create();
-        $this->actingAs($this->admin);
+        $this->actingAs($this->admin, 'admin');
     }
 
     protected function makeStaff(): User

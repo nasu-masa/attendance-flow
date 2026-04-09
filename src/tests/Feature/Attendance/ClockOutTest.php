@@ -60,10 +60,12 @@ class ClockOutTest extends BaseStaffAttendanceTestCase
 
         $response = $this->get(route('staff.attendance.list'));
 
-        $displayDate = $attendance->date->format('m/d') . '(' . $attendance->date->isoFormat('dd') . ')';
+        $date = $attendance->date;
+
+        $dateText = $date->format('m/d') . '(' . $date->isoFormat('dd') . ')';
 
         $response->assertSeeInOrder([
-            $displayDate,
+            $dateText,
             $attendance->clock_out->format('H:i'),
         ]);
     }

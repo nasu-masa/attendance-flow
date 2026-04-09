@@ -5,11 +5,11 @@
 :root {
     /* Colors */
     --color-base: #000;
-    --color-string: rgba(115, 115, 115, 1);
+    --color-string: rgb(115 115 115 / 100%);
     --color-gray: #ababab;
     --color-link: #0073CC;
     --color-error: #e53935;
-    --attendance-border-color: rgb(225, 225, 225, 1);
+    --attendance-border-color: rgb(225 225 225 / 100%);
 
     /* Font sizes */
     --font-xxl: 36px;
@@ -32,20 +32,20 @@
     position: fixed;
     top: 100px;
     right: 20px;
-    max-width: 700px;
-    border: 1px solid transparent;
-    transition: opacity 0.6s ease;
     text-align: right;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 15%);
+    max-width: 700px;
     opacity: 0.8;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: opacity 0.6s ease;
 }
 
 .c-flash__inner {
     display: inline-block;
-    backdrop-filter: blur(4px);
     padding: 16px;
     font-size: 20px;
     font-weight: bold;
+    backdrop-filter: blur(4px);
     pointer-events: auto;
 }
 
@@ -54,10 +54,10 @@
 }
 
 .c-flash--success {
-    background-color: #e6ffed;
-    border-color: #8de0a3;
     color: #1a7f37;
     border-radius: 6px;
+    background-color: #e6ffed;
+    border-color: #8de0a3;
 }
 
 /* ================================
@@ -65,13 +65,13 @@
 ================================ */
 
 .c-card {
-    max-width: 680px;
     margin: 0 auto;
+    max-width: 680px;
 }
 
 .c-card__title {
-    font-size: var(--font-xxl);
     margin: 0;
+    font-size: var(--font-xxl);
     text-align: center;
 }
 
@@ -87,9 +87,9 @@
 .c-input__label {
     display: block;
     height: 36px;
-    margin-bottom: 4px;
     font-size: var(--font-md);
     font-weight: bold;
+    margin-bottom: 4px;
 }
 
 .c-input__field {
@@ -101,14 +101,14 @@
 
 .c-input--sm {
     height: 45px;
-    line-height: 45px;
     font-size: var(--font-sm);
+    line-height: 45px;
 }
 
 .c-input--md {
     height: 60px;
-    line-height: 60px;
     font-size: var(--font-md);
+    line-height: 60px;
 }
 
 /* ================================
@@ -136,10 +136,10 @@
 }
 
 .c-error__text {
-    color: var(--color-error);
     font-size: var(--font-md);
     font-weight: bold;
     line-height: 20px;
+    color: var(--color-error);
 }
 
 .c-error__text--sm {
@@ -167,12 +167,12 @@
 .c-button {
     width: 100%;
     height: 60px;
-    line-height: 60px;
-    border: none;
-    border-radius: var(--radius-md);
-    color: #fff;
     font-size: var(--font-lg);
     font-weight: bold;
+    line-height: 60px;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
     text-decoration: none;
 }
 
@@ -197,22 +197,22 @@
 
 .c-attendance-table__button {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 130px;
     height: 50px;
-    background-color: var(--color-base);
-    color: #fff;
     font-size: 22px;
     font-weight: bold;
+    color: #fff;
     border: none;
     border-radius: 6px;
+    background-color: var(--color-base);
     letter-spacing: 0.15em;
 }
 
 .c-attendance-table__button--submit:hover {
-    opacity: 0.7;
     cursor: pointer;
+    opacity: 0.7;
 }
 
 .c-attendance-table__button--submit:active {
@@ -221,13 +221,13 @@
 
 .c-attendance-table__button--approve {
     margin: 0;
-    background-color: rgb(105, 105, 105, 1);
+    background-color: rgb(105 105 105 / 100%);
 }
 
 .c-attendance-table__button--export {
     width: 184px;
-    text-decoration: none;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .c-attendance-table__button--export:hover {
@@ -241,8 +241,8 @@
 .c-link__text {
     display: block;
     font-size: var(--font-sm);
-    color: var(--color-link);
     text-align: center;
+    color: var(--color-link);
     text-decoration: none;
 }
 
@@ -257,10 +257,10 @@
 .c-attendance__title {
     width: 100%;
     margin: 64px 0 40px;
-    padding-left: 24px;
+    font-size: 30px;
     line-height: 1.25;
     border-left: 8px solid #000;
-    font-size: 30px;
+    padding-left: 24px;
 }
 
 .c-attendance__title--spacing {
@@ -282,16 +282,16 @@
 
 .c-attendance-table {
     width: 100%;
-    table-layout: fixed;
-    color: var(--color-string);
     font-size: var(--font-xs);
     font-weight: bold;
-    letter-spacing: 0.15em;
     text-align: left;
+    color: var(--color-string);
     background-color: #fff;
-    white-space: nowrap;
+    letter-spacing: 0.15em;
     overflow: hidden;
+    table-layout: fixed;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ================================
@@ -317,15 +317,15 @@
 
 .c-attendance-table__head--date,
 .c-attendance-table__data--date {
-    text-indent: 56px;
     text-align: left;
+    text-indent: 56px;
 }
 
 
 .c-attendance-table__head--user,
 .c-attendance-table__data--user {
-    text-indent: -48px;
     text-align: center;
+    text-indent: -48px;
 }
 
 
@@ -394,8 +394,8 @@
 .c-attendance-table__head--user~th:nth-child(n+2):nth-child(-n+6),
 .c-attendance-table__data--user~td:nth-child(n+2):nth-child(-n+6) {
     width: 136px;
-    text-indent: -64px;
     text-align: center;
+    text-indent: -64px;
 }
 
 /* ================================
@@ -407,13 +407,13 @@
 }
 
 .c-attendance-table__row:not(:last-child)::after {
-    content: "";
     position: absolute;
-    left: 0;
     right: 0;
     bottom: 0;
+    left: 0;
     height: 2px;
     background-color: var(--attendance-border-color);
+    content: "";
 }
 
 .c-attendance-table__row td {
@@ -464,26 +464,26 @@
 .c-attendance__input {
     width: 104px;
     height: 24px;
-    letter-spacing: 0.15em;
-    text-align: center;
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
     border: 1px solid var(--attendance-border-color);
+    letter-spacing: 0.15em;
 }
 
 .c-attendance-table__range {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
 .c-attendance__textarea {
     width: 100%;
     height: 70px;
     padding: 10px 14px;
-    letter-spacing: 0.15em;
     font-weight: bold;
     border: 1px solid var(--attendance-border-color);
+    letter-spacing: 0.15em;
     resize: none;
 }
 
@@ -504,12 +504,12 @@
 }
 
 .c-attendance__disabled {
-    margin-top: 24px;
-    color: rgba(255, 0, 0, 0.5);
-    text-align: right;
     font-size: 18px;
     font-weight: bold;
+    text-align: right;
+    color: rgb(255 0 0 / 50%);
     letter-spacing: 0.15em;
+    margin-top: 24px;
 }
 
 /* ================================
@@ -541,10 +541,10 @@
     align-items: center;
     width: 100%;
     height: 60px;
-    margin-bottom: 48px;
     padding: 0 24px;
-    background-color: #fff;
     border-radius: 10px;
+    background-color: #fff;
+    margin-bottom: 48px;
 }
 
 .c-attendance-nav__item {
@@ -574,8 +574,8 @@
 }
 
 .c-attendance-nav__link--content {
-    color: var(--color-string);
     font-weight: bold;
+    color: var(--color-string);
 }
 
 /* ================================
@@ -583,8 +583,8 @@
 ================================ */
 
 .c-icon {
-    background-size: contain;
     background-repeat: no-repeat;
+    background-size: contain;
 }
 
 .c-icon--calendar {
@@ -609,16 +609,16 @@
 
 .c-tabs {
     display: flex;
-    gap: 56px;
     margin: 0 auto;
+    gap: 56px;
 }
 
 .c-tabs__status {
+    font-size: var(--font-xs);
+    color: var(--color-base);
     margin-left: 64px;
     padding-top: 32px;
-    color: var(--color-base);
     text-decoration: none;
-    font-size: var(--font-xs);
 }
 
 .c-tabs__status.active {

@@ -17,7 +17,6 @@
 - **CSS**
 - **Laravel Fortify（認証）**
 
-
 ## ◎ 画面キャプチャ (Screenshots)
 
 ※本アプリの UI は多数存在しますが、README では アプリの全体像が最短で伝わる 4 画面 を厳選しています。
@@ -27,7 +26,7 @@
 ![打刻画面](docs/images/01_attendance_screen.png)
 
 - スタッフが出勤・休憩・退勤を行うメイン画面です。現在のステータスに応じてボタン表示が切り替わり、
-   UIState によって一貫した状態管理をしています。
+  UIState によって一貫した状態管理をしています。
 
 ### ② スタッフ：勤怠詳細（修正申請フォーム）
 
@@ -130,22 +129,26 @@
 
 ---
 
-### ◆ 主なルーティング一覧 （web.php）※抜粋
+### ◆ 主なルーティング一覧 ※抜粋
+
+（web.php）
 
 #### 一般ユーザー（スタッフ）
 
 | 機能           | メソッド | パス                           | コントローラー                          |
-| ------------- | -------- | ------------------------------ | --------------------------------------- |
+| -------------- | -------- | ------------------------------ | --------------------------------------- |
 | 出勤画面       | GET      | /attendance                    | AttendanceController@index              |
 | 出勤/退勤/休憩 | POST     | /attendance                    | AttendanceController@action             |
 | 勤怠一覧       | GET      | /attendance/list               | AttendanceController@list               |
 | 勤怠詳細       | GET      | /attendance/detail/{id}        | AttendanceController@detail             |
 | 修正申請一覧   | GET      | /stamp_correction_request/list | CorrectionRequestController@requestList |
 
-#### 管理者 ※抜粋
+(admin.php)
 
-| 機能                 | メソッド | パス                         | コントローラー                             |
-| ------------------- | -------- | ---------------------------- | ---------------------------------------- |
+#### 管理者
+
+| 機能                 | メソッド | パス                         | コントローラー                            |
+| -------------------- | -------- | ---------------------------- | ----------------------------------------- |
 | 管理者ログイン       | GET      | /admin/login                 | AdminAuthController@showLogin             |
 | 日次勤怠一覧         | GET      | /admin/attendance/list       | AdminAttendanceController@list            |
 | 勤怠詳細             | GET      | /admin/attendance/{id}       | AdminAttendanceController@detail          |
@@ -154,60 +157,59 @@
 
 #### 管理者：修正申請
 
-| 機能            |  メソッド | パス                                   | コントローラー                    |
-| --------------- | -------- | -------------------------------------  | -------------------------------- |
+| 機能             | メソッド | パス                                   | コントローラー                   |
+| ---------------- | -------- | -------------------------------------- | -------------------------------- |
 | 修正申請一覧     | GET      | /stamp_correction_request/admin/list   | CorrectionController@requestList |
-| 修正申請承認画面 | GET      | /stamp_correction_request/approve/{id} | CorrectionController@showApprove |
+| 修正申請承認画面 | GET      | /stamp_correction_request/approve/{attendance_correct_request_id} | CorrectionController@showApprove |
 
 ### ◆ コントローラー 一覧 (Controller)
 
-| コントローラー名                     | 役割                                                            |
-| ----------------------------------- | -------------------------------------------------------------- |
-| AttendanceController.php            | スタッフ側の出勤・退勤・休憩・勤怠一覧・勤怠詳細の処理              |
-| CorrectionRequestController.php     | スタッフ側の修正申請一覧・修正申請送信処理                         |
-| AuthController.php                  | スタッフ側のログイン・登録・メール認証                             |
-| Admin/AdminAuthController.php       | 管理者ログイン処理                                               |
+| コントローラー名                    | 役割                                                                 |
+| ----------------------------------- | -------------------------------------------------------------------- |
+| AttendanceController.php            | スタッフ側の出勤・退勤・休憩・勤怠一覧・勤怠詳細の処理               |
+| CorrectionRequestController.php     | スタッフ側の修正申請一覧・修正申請送信処理                           |
+| AuthController.php                  | スタッフ側のログイン・登録・メール認証                               |
+| Admin/AdminAuthController.php       | 管理者ログイン処理                                                   |
 | Admin/AdminAttendanceController.php | 管理者側の日次勤怠一覧・勤怠詳細・スタッフ一覧・スタッフ月次勤怠一覧 |
-| Admin/CorrectionController.php      | 管理者側の修正申請一覧・承認画面・承認処理                         |
+| Admin/CorrectionController.php      | 管理者側の修正申請一覧・承認画面・承認処理                           |
 
 ### ◆ モデル 一覧（Model）
 
-| モデルファイル名       | 説明                                          |
+| モデルファイル名      | 説明                                         |
 | --------------------- | -------------------------------------------- |
-| User.php              | ユーザー（従業員・管理者）の属性と権限を表す     |
-| Attendance.php        | 1 日分の勤怠記録を表す                         |
-| BreakLog.php          | 勤務中の休憩ログを表す                         |
-| CorrectionRequest.php | 勤怠修正申請(変更前後の差分と理由)を表す        |
+| User.php              | ユーザー（従業員・管理者）の属性と権限を表す |
+| Attendance.php        | 1 日分の勤怠記録を表す                       |
+| BreakLog.php          | 勤務中の休憩ログを表す                       |
+| CorrectionRequest.php | 勤怠修正申請(変更前後の差分と理由)を表す     |
 
 ### ◆ サービス 一覧（Service）
 
-| サービス名                    | 役割（責務）                               |
-| ---------------------------- | ----------------------------------------- |
-| AuthService.php              | 会員登録時の保存処理を担当                  |
-| AttendanceService.php        | 出勤・退勤・休憩など、勤怠に関する処理を集約  |
-| CorrectionRequestService.php | 勤怠修正申請の作成・更新・承認処理などを担当  |
-
+| サービス名                   | 役割（責務）                                 |
+| ---------------------------- | -------------------------------------------- |
+| AuthService.php              | 会員登録時の保存処理を担当                   |
+| AttendanceService.php        | 出勤・退勤・休憩など、勤怠に関する処理を集約 |
+| CorrectionRequestService.php | 勤怠修正申請の作成・更新・承認処理などを担当 |
 
 ### ◆ プレゼンター 一覧（ Presenter / UIState）
 
 #### Presenters（表示用データ整形）
 
-| ファイル名                             | 役割（責務）                                        |
-| ------------------------------------- | -------------------------------------------------- |
-| AdminDailyAttendanceListPresenter.php | 管理者の日次勤怠一覧の表示用データ整形                 |
-| AttendanceDetailPresenter.php         | 勤怠詳細画面で使用する日付・時刻・ステータスなどの整形  |
-| AttendanceListPresenter.php           | スタッフ側の勤怠一覧の表示用データ整形                 |
+| ファイル名                            | 役割（責務）                                             |
+| ------------------------------------- | -------------------------------------------------------- |
+| AdminDailyAttendanceListPresenter.php | 管理者の日次勤怠一覧の表示用データ整形                   |
+| AttendanceDetailPresenter.php         | 勤怠詳細画面で使用する日付・時刻・ステータスなどの整形   |
+| AttendanceListPresenter.php           | スタッフ側の勤怠一覧の表示用データ整形                   |
 | AttendancePresenter.php               | スタッフの勤怠ステータス変更や勤怠合計時間等のデータ整形 |
-| AttendanceRequestListPresenter.php    | スタッフ側の修正申請一覧の表示用データ整形              |
-| BasePresenter.php                     | 各プレゼンターの共通処理を集約した親presenter          |
-| CalendarPresenter.php                 | 月次カレンダー等のナビゲーションや表示構造の組み立て    |
-| CorrectionRequestPresenter.php        | 管理者側の修正申請一覧・承認画面の表示用データ整形      |
-| WorkMessagePresenter.php              | 勤怠ステータスの状態に応じたステータスメッセージの選定  |
+| BasePresenter.php                     | 各プレゼンターの共通処理を集約した親presenter            |
+| CalendarPresenter.php                 | 月次カレンダー等のナビゲーションや表示構造の組み立て     |
+| CorrectionRequestPresenter.php        | 管理者側の修正申請一覧・承認画面の表示用データ整形       |
+| CorrectionRequestListPresenter.php    | スタッフ側の修正申請一覧の表示用データ整形               |
+| WorkMessagePresenter.php              | 勤怠ステータスの状態に応じたステータスメッセージの選定   |
 
 #### UIState（UI の状態判定）
 
-| ファイル名             | 役割（責務）                                                  |
-| --------------------- | -------------------------------------------------------------|
+| ファイル名            | 役割（責務）                                                       |
+| --------------------- | ------------------------------------------------------------------ |
 | AttendanceUIState.php | 出勤中／休憩中／退勤済みなど、勤怠画面のボタン表示・状態判定を担当 |
 
 ### ◆ ビュー 一覧（Bladeファイル）
@@ -236,7 +238,7 @@ app/
 │
 ├── Models/                 # Eloquentモデル（DBアクセス）
 │
-├── Services/               # ビジネスロジック（勤怠処理・CSV出力など）
+├── Services/               # ビジネスロジック（勤怠処理など）
 │
 ├── Support/
 │     ├── Export/
@@ -371,7 +373,7 @@ test4343
 ### ◆ 勤怠関連（スタッフ）
 
 - 2026年1月1日〜seeder 実行日前日までの勤怠データ
-（その他のダミースタッフは **2026年1月1日〜Seeder 実行日まで** の勤怠データを保持）
+  （その他のダミースタッフは **2026年1月1日〜Seeder 実行日まで** の勤怠データを保持）
 
 - 修正申請データ
 - 承認待ち申請
@@ -410,6 +412,7 @@ DB_PASSWORD=laravel_pass
 php artisan key:generate --env=testing
 
 ```
+
 ```bash
 
 exit;
@@ -427,11 +430,13 @@ Laravel のテストは .env.testing の設定を使用します。
 docker exec -it <mysqlコンテナ名> bash
 
 ```
+
 ```bash
 
 mysql -u root -p
 
 ```
+
 ```bash
 
 CREATE DATABASE demo_test;
@@ -439,11 +444,13 @@ CREATE DATABASE demo_test;
 SHOW DATABASES;
 
 ```
+
 ```bash
 
 exit;
 
 ```
+
 ※ <mysqlコンテナ名> は docker ps で確認できます。
 
 3. テスト用マイグレーションの実行
@@ -505,12 +512,12 @@ php artisan test --env=testing
 #### ◆ 開発環境 URL
 
 | 機能                  | URL                          |
-| -------------------- | ---------------------------  |
+| --------------------- | ---------------------------- |
 | トップページ          | http://localhost/attendance  |
 | ユーザー登録          | http://localhost/register    |
 | ログイン              | http://localhost/login       |
 | 管理者ログイン        | http://localhost/admin/login |
-| phpMyAdmin           | http://localhost:8080/       |
+| phpMyAdmin            | http://localhost:8080/       |
 | MailHog（メール確認） | http://localhost:8025/       |
 
 ---
@@ -554,6 +561,7 @@ ER図では以下のエンティティを定義しています：
 このテーブル仕様書と完全に一致するように実装しています。
 
 ---
+
 > ※ 各サービスの構成は `docker-compose.yml` を参照してください
 
 ### ◎ 設計経緯・考え方

@@ -92,12 +92,14 @@ class BreakTest extends BaseStaffAttendanceTestCase
 
         $attendance->refresh();
 
+        $date = $attendance->date;
+
         $response = $this->get(route('staff.attendance.list'));
 
-        $displayDate = $attendance->date->format('m/d') . '(' . $attendance->date->isoFormat('dd') . ')';
+        $dateText = $date->format('m/d') . '(' . $date->isoFormat('dd') . ')';
 
         $response->assertSeeInOrder([
-            $displayDate,
+            $dateText,
             '3:45',
         ]);
     }

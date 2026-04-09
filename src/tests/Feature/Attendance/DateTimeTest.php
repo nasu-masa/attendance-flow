@@ -14,7 +14,7 @@ class DateTimeTest extends TestCase
     {
         $user = User::factory()->create([
             'role' => User::ROLE_STAFF,
-        ]);
+        ])->first();
 
         $this->actingAs($user);
 

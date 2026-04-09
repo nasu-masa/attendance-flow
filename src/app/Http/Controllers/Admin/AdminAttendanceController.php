@@ -36,9 +36,9 @@ class AdminAttendanceController extends Controller
 
         $days = $presenter->buildDailyCalendar($users, $attendances, $nav['current']);
 
-        $display = AdminDailyAttendanceListPresenter::make($nav, $days);
+        $dailyAttendanceList = AdminDailyAttendanceListPresenter::make($nav, $days);
 
-        return view('admin.attendance.list', compact('display'));
+        return view('admin.attendance.list', compact('dailyAttendanceList'));
     }
 
 
@@ -51,9 +51,9 @@ class AdminAttendanceController extends Controller
     {
         $attendance = Attendance::withRelationsForDetails()->findOrFail($attendanceId);
 
-        $display = AttendanceDetailPresenter::make($attendance, true);
+        $attendanceDetail = AttendanceDetailPresenter::make($attendance, true);
 
-        return view('admin.attendance.detail', compact('attendance', 'display'));
+        return view('admin.attendance.detail', compact('attendance', 'attendanceDetail'));
     }
 
 
@@ -114,8 +114,8 @@ class AdminAttendanceController extends Controller
 
         return view('admin.staff.attendance', [
             'user'    => $user,
-            'display' => $result['display'],
             'csvUrl'  => $result['csvUrl'],
+            'attendanceList' => $result['attendanceList'],
         ]);
     }
 
@@ -130,14 +130,18 @@ class AdminAttendanceController extends Controller
         AttendanceCsvExporter $exporter,
         Request $request,
         int $userId
-    )
-    {
+    ) {
         [$user, $attendances, $year, $month] = $service->getMonthlyAttendanceForCsv(
-            $userId, $request->year, $request->month
+            $userId,
+            $request->year,
+            $request->month
         );
 
         return $exporter->export(
-            $user, $attendances, $year, $month
+            $user,
+            $attendances,
+            $year,
+            $month
         );
     }
 }

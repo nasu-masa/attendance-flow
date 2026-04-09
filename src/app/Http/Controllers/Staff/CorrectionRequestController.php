@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Staff\CorrectionRequestRequest;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
-use App\Presenters\AttendanceRequestListPresenter;
+use App\Presenters\CorrectionRequestListPresenter;
 use App\Services\CorrectionRequestService;
 use Illuminate\Http\Request;
 
@@ -57,8 +57,8 @@ class CorrectionRequestController extends Controller
             ? $service->getPendingRequestsByUser($userId)
             : $service->getApprovedRequestsByUser($userId);
 
-        $display = AttendanceRequestListPresenter::make($requests, $tab);
+        $correctionRequestList = CorrectionRequestListPresenter::make($requests, $tab);
 
-        return view('staff.request.list', compact('display'));
+        return view('staff.attendance.correction.list', compact('correctionRequestList'));
     }
 }

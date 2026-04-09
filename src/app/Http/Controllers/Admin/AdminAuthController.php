@@ -16,6 +16,10 @@ class AdminAuthController extends Controller
      */
     public function showLogin()
     {
+        if(Auth::guard('admin')->check()) {
+            return redirect()->route('admin.attendance.list');
+        }
+
         return view('admin.auth.login');
     }
 
@@ -27,14 +31,18 @@ class AdminAuthController extends Controller
      */
     public function login(LoginUserRequest $request)
     {
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::guard('admin')->attempt($credentials)) {
             return back()->withErrors([
                 'email' => 'ログイン情報が登録されていません',
             ]);
         }
 
-        if (!Auth::user()->isAdmin()) {
-            Auth::logout();
+        $user = Auth::guard('admin')->user();
+
+        if (!$user->isAdmin()) {
+            Auth::guard('admin')->logout();
             return back()->withErrors([
                 'email' => 'ログイン権限がありません',
             ]);
@@ -42,14 +50,8 @@ class AdminAuthController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
-
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.attendance.list')
-                ->with('success', 'ログインが成功しました');
-        }
-
-        return back();
+        return redirect()->route('admin.attendance.list')
+            ->with('success', 'ログインが成功しました');
     }
 
 

@@ -14,12 +14,12 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
     {
         parent::setUp();
 
-        $this->listUrl = route('admin.request.list');
+        $this->listUrl = route('admin.attendance.correction.list');
     }
 
-    protected function detailUrl($id): string
+    protected function detailUrl($attendance_correct_request_id): string
     {
-        return route('admin.request.approve.show', $id);
+        return route('admin.attendance.correction.approve.show', $attendance_correct_request_id);
     }
 
     protected function assertListDisplaysRequests(string $status, string $statusLabel)
@@ -116,7 +116,7 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
             ->pending()
             ->create();
 
-        $this->patch(route('admin.request.approve', $requestToApprove->id));
+        $this->patch(route('admin.attendance.correction.approve', $requestToApprove->id));
 
         $this->assertDatabaseHas('correction_requests', [
             'id' => $requestToApprove->id,

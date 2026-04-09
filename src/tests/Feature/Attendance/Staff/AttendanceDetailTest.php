@@ -16,7 +16,7 @@ class AttendanceDetailTest extends TestCase
         $user = User::factory()->create([
             'name' => '茄子田常夫',
             'role' => User::ROLE_STAFF,
-        ]);
+        ])->first();
 
         $this->actingAs($user);
 

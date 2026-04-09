@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CorrectionRequest;
 use App\Models\User;
-use App\Presenters\AttendanceRequestListPresenter;
+use App\Presenters\CorrectionRequestListPresenter;
 use App\Presenters\CorrectionRequestPresenter;
 use App\Services\CorrectionRequestService;
 use Illuminate\Http\Request;
@@ -27,9 +27,9 @@ class CorrectionController extends Controller
             ? $service->getPendingRequestsByUser($userIds)
             : $service->getApprovedRequestsByUser($userIds);
 
-        $display = AttendanceRequestListPresenter::make($requests, $tab);
+        $correctionRequestList = CorrectionRequestListPresenter::make($requests, $tab);
 
-        return view('admin.request.list', compact('display'));
+        return view('admin.attendance.correction.list', compact('correctionRequestList'));
     }
 
 
@@ -38,17 +38,17 @@ class CorrectionController extends Controller
      * 【制約】$id は存在する修正申請の ID であり、関連する勤怠データが取得可能である必要がある。
      * 【注意】勤怠データが欠損している場合は null が返るため、Presenter 側の処理に依存して表示が決まる。
      */
-    public function showApprove(int $id)
+    public function showApprove(int $attendance_correct_request_id)
     {
-        $correctionRequest = CorrectionRequest::findOrFail($id);
+        $correctionRequest = CorrectionRequest::findOrFail($attendance_correct_request_id);
 
         $attendance = $correctionRequest->attendance()
             ->withAllRelations()
             ->first();
 
-        $display = CorrectionRequestPresenter::make($correctionRequest);
+        $correctionRequestDetail = CorrectionRequestPresenter::make($correctionRequest);
 
-        return view('admin.request.approve', compact('attendance', 'display'));
+        return view('admin.attendance.correction.approve', compact('attendance', 'correctionRequestDetail'));
     }
 
 
@@ -57,9 +57,9 @@ class CorrectionController extends Controller
      * 【制約】$id は存在する修正申請の ID であり、auth()->user() が管理者であることが前提となる。
      * 【注意】承認処理中の例外はサービス側に依存するため、Controller では成功時のフィードバックのみを扱う。
      */
-    public function approve(CorrectionRequestService $service, int $id)
+    public function approve(CorrectionRequestService $service, int $attendance_correct_request_id)
     {
-        $service->approveById($id, auth()->user());
+        $service->approveById($attendance_correct_request_id, auth()->user());
 
         return back()->with('success', '承認しました');
     }

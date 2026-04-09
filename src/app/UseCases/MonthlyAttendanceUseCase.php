@@ -28,10 +28,10 @@ class MonthlyAttendanceUseCase
 
         $days = $this->calendarPresenter->getMonthlyCalendar($attendances, $year, $month);
 
-        $display = AttendanceListPresenter::make($nav, $days);
+        $attendanceList = AttendanceListPresenter::make($nav, $days);
 
         $csvUrl = CsvExportUrl::make($user->id, $nav['current']);
 
-        return compact('nav', 'days', 'display', 'csvUrl');
+        return compact('nav', 'days', 'attendanceList', 'csvUrl');
     }
 }

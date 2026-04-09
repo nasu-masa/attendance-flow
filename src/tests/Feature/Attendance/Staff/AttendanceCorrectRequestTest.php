@@ -3,6 +3,7 @@
 namespace Tests\Feature\Attendance\Staff;
 
 use App\Models\CorrectionRequest;
+use App\Models\User;
 
 class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
 {
@@ -116,10 +117,10 @@ class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
     {
         [$user, $attendance, $correction] = $this->createPendingRequest();
 
-        $admin = \App\Models\User::factory()->admin()->create();
-        $this->actingAs($admin);
+        $admin = User::factory()->admin()->create();
+        $this->actingAs($admin, 'admin');
 
-        $response = $this->get(route('admin.request.list'));
+        $response = $this->get(route('admin.attendance.correction.list'));
 
         $this->assertCorrectionVisible($response, $correction, '承認待ち');
     }
@@ -129,7 +130,7 @@ class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
         [$user, $attendance, $correction] = $this->createPendingRequest();
 
         $response = $this->actingAs($user)
-            ->get(route('staff.request.list', ['tab' => CorrectionRequest::STATUS_PENDING]));
+            ->get(route('staff.attendance.correction.list', ['tab' => CorrectionRequest::STATUS_PENDING]));
 
         $this->assertCorrectionVisible($response, $correction, '承認待ち');
     }
@@ -138,15 +139,15 @@ class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
     {
         [$user, $attendance, $correction] = $this->createPendingRequest();
 
-        $admin = \App\Models\User::factory()->admin()->create();
-        $this->actingAs($admin)
-            ->patch(route('admin.request.approve', ['id' => $correction->id]));
+        $admin = User::factory()->admin()->create();
+        $this->actingAs($admin, 'admin')
+            ->patch(route('admin.attendance.correction.approve', ['attendance_correct_request_id' => $correction->id]));
 
         $correction->refresh();
         $this->assertEquals(CorrectionRequest::STATUS_APPROVED, $correction->status);
 
         $response = $this->actingAs($user)
-            ->get(route('staff.request.list', ['tab' => CorrectionRequest::STATUS_APPROVED]));
+            ->get(route('staff.attendance.correction.list', ['tab' => CorrectionRequest::STATUS_APPROVED]));
 
         $this->assertCorrectionVisible($response, $correction, '承認済み');
     }
