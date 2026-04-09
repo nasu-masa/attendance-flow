@@ -17,6 +17,8 @@
 - **CSS**
 - **Laravel Fortify（認証）**
 
+>※ 各サービスの構成は `docker-compose.yml` を参照してください
+
 ## ◎ 画面キャプチャ (Screenshots)
 
 ※本アプリの UI は多数存在しますが、README では アプリの全体像が最短で伝わる 4 画面 を厳選しています。
@@ -131,103 +133,96 @@
 
 ---
 
-### ◆ 主なルーティング一覧 ※抜粋
+### ◆ 主なルーティング一覧 (Routing)
 
-（web.php）
+**一般ユーザー（Staff）**
 
-#### 一般ユーザー（スタッフ）
+`routes/web.php` で定義。スタッフの日常業務に関するルートです。
 
-| 機能           | メソッド | パス                           | コントローラー                          |
-| -------------- | -------- | ------------------------------ | --------------------------------------- |
-| 出勤画面       | GET      | /attendance                    | AttendanceController@index              |
-| 出勤/退勤/休憩 | POST     | /attendance                    | AttendanceController@action             |
-| 勤怠一覧       | GET      | /attendance/list               | AttendanceController@list               |
-| 勤怠詳細       | GET      | /attendance/detail/{id}        | AttendanceController@detail             |
-| 修正申請一覧   | GET      | /stamp_correction_request/list | CorrectionRequestController@requestList |
+- **勤怠操作・一覧**
+    - 出勤画面：`GET /attendance` (`AttendanceController@index`)
+    - 打刻処理：`POST /attendance` (`AttendanceController@action`)
+    - 勤怠一覧：`GET /attendance/list` (`AttendanceController@list`)
+    - 勤怠詳細：`GET /attendance/detail/{id}` (`AttendanceController@detail`)
+- **修正申請**
+    - 申請一覧：`GET /stamp_correction_request/list` (`CorrectionRequestController@requestList`)
 
-(admin.php)
+**管理者（Admin）**
 
-#### 管理者
+`routes/admin.php` で定義。管理者専用 Guard により保護されています。
 
-| 機能                 | メソッド | パス                         | コントローラー                            |
-| -------------------- | -------- | ---------------------------- | ----------------------------------------- |
-| 管理者ログイン       | GET      | /admin/login                 | AdminAuthController@showLogin             |
-| 日次勤怠一覧         | GET      | /admin/attendance/list       | AdminAttendanceController@list            |
-| 勤怠詳細             | GET      | /admin/attendance/{id}       | AdminAttendanceController@detail          |
-| スタッフ一覧         | GET      | /admin/staff/list            | AdminAttendanceController@staffList       |
-| スタッフ月次勤怠一覧 | GET      | /admin/attendance/staff/{id} | AdminAttendanceController@staffAttendance |
+- **基本管理**
+    - ログイン：`GET /admin/login` (`AdminAuthController@showLogin`)
+    - 日次勤怠一覧：`GET /admin/attendance/list` (`AdminAttendanceController@list`)
+    - 勤怠詳細：`GET /admin/attendance/{id}` (`AdminAttendanceController@detail`)
+- **スタッフ管理**
+    - スタッフ一覧：`GET /admin/staff/list` (`AdminAttendanceController@staffList`)
+    - 個別月次一覧：`GET /admin/attendance/staff/{id}` (`AdminAttendanceController@staffAttendance`)
+- **修正申請対応**
+    - 申請一覧：`GET /stamp_correction_request/admin/list` (`CorrectionController@requestList`)
+    - 承認・詳細：`GET /stamp_correction_request/approve/{attendance_correct_request_id}` (`CorrectionController@showApprove`)
 
-#### 管理者：修正申請
+---
 
-| 機能             | メソッド | パス                                   | コントローラー                   |
-| ---------------- | -------- | -------------------------------------- | -------------------------------- |
-| 修正申請一覧     | GET      | /stamp_correction_request/admin/list   | CorrectionController@requestList |
-| 修正申請承認画面 | GET      | /stamp_correction_request/approve/{attendance_correct_request_id} | CorrectionController@showApprove |
+### ◆ クラス設計・責務分離
 
-### ◆ コントローラー 一覧 (Controller)
+**コントローラー (Controller)**
 
-| コントローラー名                    | 役割                                                                 |
-| ----------------------------------- | -------------------------------------------------------------------- |
-| AttendanceController.php            | スタッフ側の出勤・退勤・休憩・勤怠一覧・勤怠詳細の処理               |
-| CorrectionRequestController.php     | スタッフ側の修正申請一覧・修正申請送信処理                           |
-| AuthController.php                  | スタッフ側のログイン・登録・メール認証                               |
-| Admin/AdminAuthController.php       | 管理者ログイン処理                                                   |
-| Admin/AdminAttendanceController.php | 管理者側の日次勤怠一覧・勤怠詳細・スタッフ一覧・スタッフ月次勤怠一覧 |
-| Admin/CorrectionController.php      | 管理者側の修正申請一覧・承認画面・承認処理                           |
+| **クライアント** | **コントローラー名** | **役割** |
+| --- | --- | --- |
+| **Staff** | `AttendanceController` | 打刻・一覧・詳細の制御 |
+|  | `CorrectionRequestController` | 修正申請の送信・一覧 |
+|  | `AuthController` | 登録・ログイン・メール認証 |
+| **Admin** | `Admin/AdminAuthController` | 管理者専用ログイン |
+|  | `Admin/AdminAttendanceController` | 各種勤怠一覧・詳細の管理 |
+|  | `Admin/CorrectionController` | 修正申請の判定・承認 |
 
-### ◆ モデル 一覧（Model）
+**プレゼンター (Presenter / UIState)**
 
-| モデルファイル名      | 説明                                         |
-| --------------------- | -------------------------------------------- |
-| User.php              | ユーザー（従業員・管理者）の属性と権限を表す |
-| Attendance.php        | 1 日分の勤怠記録を表す                       |
-| BreakLog.php          | 勤務中の休憩ログを表す                       |
-| CorrectionRequest.php | 勤怠修正申請(変更前後の差分と理由)を表す     |
+表示ロジックを分離し、Viewの純粋性を保ちます。
 
-### ◆ サービス 一覧（Service）
+- **表示整形 (Presenters)**
+    - `AdminDailyAttendanceListPresenter`: 管理者向け一覧整形
+    - `AttendanceDetailPresenter`: 勤怠詳細（日時・状態）整形
+    - `AttendanceListPresenter`: スタッフ向け一覧整形
+    - `AttendancePresenter`: 合計時間計算・ステータス加工
+    - `BasePresenter`: プレゼンター共通基盤
+    - `CalendarPresenter`: カレンダーナビゲーション構築
+    - `CorrectionRequestPresenter`: 管理者向け申請・承認用整形
+    - `CorrectionRequestListPresenter`: スタッフ向け申請一覧整形
+    - `WorkMessagePresenter`: 状態に応じたメッセージ選定
+- **状態判定 (UIState)**
+    - `AttendanceUIState`: 出勤/休憩/退勤のボタン表示判定
 
-| サービス名                   | 役割（責務）                                 |
-| ---------------------------- | -------------------------------------------- |
-| AuthService.php              | 会員登録時の保存処理を担当                   |
-| AttendanceService.php        | 出勤・退勤・休憩など、勤怠に関する処理を集約 |
-| CorrectionRequestService.php | 勤怠修正申請の作成・更新・承認処理などを担当 |
+**業務ロジック・データ (Service / Model)**
 
-### ◆ プレゼンター 一覧（ Presenter / UIState）
+- **サービス (Service)**
+    - `AuthService`: 会員登録処理
+    - `AttendanceService`: 打刻・勤怠計算のコアロジック
+    - `CorrectionRequestService`: 修正申請の作成・承認ワークフロー
+- **モデル (Model)**
+    - `User`: 属性・権限管理（Admin/Staff）
+    - `Attendance`: 1日単位の勤怠レコード
+    - `BreakLog`: 休憩時間の記録
+    - `CorrectionRequest`: 修正申請の差分保持
 
-#### Presenters（表示用データ整形）
+---
 
-| ファイル名                            | 役割（責務）                                             |
-| ------------------------------------- | -------------------------------------------------------- |
-| AdminDailyAttendanceListPresenter.php | 管理者の日次勤怠一覧の表示用データ整形                   |
-| AttendanceDetailPresenter.php         | 勤怠詳細画面で使用する日付・時刻・ステータスなどの整形   |
-| AttendanceListPresenter.php           | スタッフ側の勤怠一覧の表示用データ整形                   |
-| AttendancePresenter.php               | スタッフの勤怠ステータス変更や勤怠合計時間等のデータ整形 |
-| BasePresenter.php                     | 各プレゼンターの共通処理を集約した親presenter            |
-| CalendarPresenter.php                 | 月次カレンダー等のナビゲーションや表示構造の組み立て     |
-| CorrectionRequestPresenter.php        | 管理者側の修正申請一覧・承認画面の表示用データ整形       |
-| CorrectionRequestListPresenter.php    | スタッフ側の修正申請一覧の表示用データ整形               |
-| WorkMessagePresenter.php              | 勤怠ステータスの状態に応じたステータスメッセージの選定   |
+### ◆ ディレクトリ構成
 
-#### UIState（UI の状態判定）
+**ビュー (Blade)**
 
-| ファイル名            | 役割（責務）                                                       |
-| --------------------- | ------------------------------------------------------------------ |
-| AttendanceUIState.php | 出勤中／休憩中／退勤済みなど、勤怠画面のボタン表示・状態判定を担当 |
+`resources/views/` 下を権限・役割ごとに完全分離しています。
 
-### ◆ ビュー 一覧（Bladeファイル）
+- `staff/`: 一般スタッフ用画面
+- `admin/`: 管理者専用画面（Guardにより保護）
+- `layouts/`: 共通枠（Staff/Admin/Guest 別）
+- `partials/`: 共通コンポーネント（ナビゲーション等）
 
-ビュー（Blade）は以下のように役割ごとにディレクトリ分割しています：
+**フロントエンド (CSS / JS)**
 
-- staff：スタッフ側の画面（ログイン・出勤・勤怠一覧・詳細・修正申請）
-- admin：管理者側の画面（勤怠一覧・詳細・修正申請承認・スタッフ一覧）
-- layouts：共通レイアウト（一般(staff)・管理者(admin)・ゲスト）
-- partials：ナビゲーションなどの共通パーツ
-
-#### フロントエンド構成（CSS / JS）
-
-CSS・JavaScript はページ単位と共通コンポーネントに分割されています。
-詳細は `public/css/` および `public/js/` ディレクトリを参照してください。
-
+- `public/css/`: ページ別および共通コンポーネント (`common.css`, `layout.css` 等)
+- `public/js/`: 状態制御および動的表示用
 ---
 
 ## ◎ ディレクトリ構成（責務ごとの役割）
@@ -564,8 +559,6 @@ ER図では以下のエンティティを定義しています：
 
 ---
 
-> ※ 各サービスの構成は `docker-compose.yml` を参照してください
-
 ### ◎ 設計経緯・考え方
 
 本アプリの設計は、実装を進めながら 「どの層が何を担当すべきか」
@@ -601,7 +594,8 @@ CSV 出力や URL 生成など、UI と無関係な処理を独立させ、
 #### ◆ まとめ
 
 全体として「責務の一元化」を重視し、UI 表示・業務ロジック・状態判定・データ整形が混在しないよう、
-各層が担う役割を明確に分離しています。これにより、変更に強く、読み手にとって予測可能な構造を実現しています。
+各層が担う役割をできる限り明確に分離しています。これにより、変更に強く、読み手にとって予測可能な構造を実現しています。
+読んでいただきありがとうございました。
 
 ### ◎ ライセンス
 
