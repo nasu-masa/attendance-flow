@@ -94,7 +94,7 @@
         @elseif ($workStatus->isFinished())
 
         <p class="p-attendance__message">
-            お疲れ様でした。
+            お疲れ様でした。<ion-icon name="sparkles-outline"></ion-icon>
         </p>
 
         @else

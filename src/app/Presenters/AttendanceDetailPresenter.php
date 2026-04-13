@@ -7,9 +7,6 @@ use App\Models\Attendance;
 class AttendanceDetailPresenter extends BasePresenter
 {
     protected Attendance $attendance;
-    protected array $after;
-    protected $isAdmin;
-
     /**
      * 【理由】修正申請が存在する場合に after_value を優先的に参照できるよう、初期化時に保持している。
      * 【制約】attendance は latestCorrectionRequest をロード済みである必要がある。
@@ -18,28 +15,24 @@ class AttendanceDetailPresenter extends BasePresenter
     public function __construct(Attendance $attendance)
     {
         $this->attendance = $attendance;
-        $this->after = $attendance->latestCorrectionRequest?->after_value ?? [];
     }
 
-    /**
-     * 【理由】管理者・一般ユーザーで表示仕様を切り替えるため、isAdmin を外部から指定できるようにしている。
-     * 【制約】attendance は toArray() が期待する関連データをロード済みである必要がある。
-     * 【注意】isAdmin の値により after_value の適用有無が変わるため、呼び出し側は意図を明確にする必要がある。
-     */
-    public static function make($attendance, $isAdmin = false)
+    public static function make($attendance)
     {
-        $self = new self($attendance);
-        $self->isAdmin = $isAdmin;
-        return $self->toArray();
+        return (new self($attendance))->toArray();
     }
 
     /**
      * 【理由】修正申請の反映・未反映を統一的に扱うため、resolveValue を通して値を決定している。
-     * 【制約】attendance の関連（user, break1, break2）がロード済みである前提で値を参照している。
+     * 【制約】attendance の関連（user, breakLogs）がロード済みである前提で値を参照している。
      * 【注意】after_value の内容が不完全な場合、一部の項目が空文字になる可能性がある。
      */
     public function toArray(): array
     {
+        $isPending = $this->attendance->isCorrectionPending();
+
+        $after = $isPending ? ($this->attendance->latestCorrectionRequest?->after_value ?? []) : [];
+
         return [
             'id'        => $this->attendance->id,
             'user_name' => $this->attendance->user->name,
@@ -47,49 +40,37 @@ class AttendanceDetailPresenter extends BasePresenter
             'date_year' => $this->attendance->date?->locale('ja')->isoFormat('YYYY年') ?? '',
             'date_md'   => $this->attendance->date?->locale('ja')->isoFormat('M月D日') ?? '',
 
-            'clock_in' => $this->resolveValue(
-                'clock_in', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->clock_in, 'H:i'
-            ),
+            'clock_in' => $this->resolveValue('clock_in', $after, $this->attendance, 'H:i'),
+            'clock_out' => $this->resolveValue('clock_out', $after, $this->attendance, 'H:i'),
+            'remarks' => $this->resolveValue('remarks', $after, $this->attendance),
 
-            'clock_out' => $this->resolveValue(
-                'clock_out', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->clock_out, 'H:i'
-            ),
+            'breaks' => $this->attendance->breakLogs->map(function ($break, $index) use ($isPending, $after) {
+                $oldStart = old('breaks.' . $index . '.start');
+                $oldEnd = old('breaks.' . $index . '.end');
 
-            'break_start_1' => $this->resolveValue(
-                'break_start_1', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->break1?->break_start, 'H:i'
-            ),
+                $hasOld = ($oldStart !== null && $oldStart !== '') || ($oldEnd !== null && $oldEnd !== '');
 
-            'break_end_1' => $this->resolveValue(
-                'break_end_1', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->break1?->break_end, 'H:i'
-            ),
+                if ($hasOld) {
+                    return [
+                        'start' => $oldStart,
+                        'end'   => $oldEnd,
+                    ];
+                }
 
-            'break_start_2' => $this->resolveValue(
-                'break_start_2', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->break2?->break_start, 'H:i'
-            ),
+                if ($isPending && isset($after['breaks'][$index])) {
+                    return [
+                        'start' => self::formatTime($after['breaks'][$index]['start']),
+                        'end'   => self::formatTime($after['breaks'][$index]['end']),
+                    ];
+                }
 
-            'break_end_2' => $this->resolveValue(
-                'break_end_2', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->break2?->break_end, 'H:i'
-            ),
+                return [
+                    'start' => self::formatTime($break->break_start),
+                    'end'   => self::formatTime($break->break_end),
+                ];
+            })->values()->toArray(),
 
-            'remarks' => $this->resolveValue(
-                'remarks', $this->isAdmin
-                    ? []
-                    : $this->after, $this->attendance->remarks
-            ),
-
-            'is_pending'    => $this->attendance->isCorrectionPending(),
+            'is_pending' => $isPending,
         ];
     }
 }

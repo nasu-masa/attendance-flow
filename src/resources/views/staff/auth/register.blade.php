@@ -13,7 +13,7 @@
 <div class="c-card">
     <h1 class="c-card__title p-register__title">会員登録</h1>
 
-    <form action="{{ route('register') }}" method="POST">
+    <form action="{{ route('register.post') }}" method="POST">
         @csrf
 
         {{-- 名前 --}}

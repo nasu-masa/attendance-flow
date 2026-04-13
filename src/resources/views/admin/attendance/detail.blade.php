@@ -66,54 +66,54 @@
                     </td>
                 </tr>
 
-                {{-- 休憩1 --}}
+                {{-- 休憩 --}}
+                @foreach ($attendanceDetail['breaks'] as $break)
                 <tr class="c-attendance-table__row">
                     <th class="c-attendance-table__title c-attendance-table__title--break">
-                        <label for="break_start_1" class="c-attendance__label">
-                            休憩
+                        <label class="c-attendance__label">
+                            @if ($loop->first)
+                                休憩
+                            @else
+                                休憩{{ $loop->iteration }}
+                            @endif
                         </label>
                     </th>
+
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
 
-                            <input type="text" id="break_start_1" name="break_start_1"
+                            {{-- 開始 --}}
+                            @if ($attendanceDetail['is_pending'])
+                            <p class="c-attendance__text">
+                                {{ $break['start'] }}
+                            </p>
+                            @else
+                            <input
+                                type="text"
+                                name="breaks[{{ $loop->index }}][start]"
                                 class="c-attendance__input"
-                                value="{{ $attendanceDetail['break_start_1'] }}">
+                                value="{{ $break['start'] }}">
+                            @endif
 
                             <span class="c-attendance-table__separator">~</span>
 
-                            <input type="text" id="break_end_1" name="break_end_1"
+                            {{-- 終了 --}}
+                            @if ($attendanceDetail['is_pending'])
+                            <p class="c-attendance__text">
+                                {{ $break['end'] }}
+                            </p>
+                            @else
+                            <input
+                                type="text"
+                                name="breaks[{{ $loop->index }}][end]"
                                 class="c-attendance__input"
-                                value="{{ $attendanceDetail['break_end_1'] }}">
+                                value="{{ $break['end'] }}">
+                            @endif
 
                         </div>
                     </td>
                 </tr>
-
-                {{-- 休憩2 --}}
-                <tr class="c-attendance-table__row">
-                    <th class="c-attendance-table__title c-attendance-table__title--break">
-                        <label for="break_start_2" class="c-attendance__label">
-                            休憩２
-                        </label>
-                    </th>
-                    <td class="c-attendance-table__content">
-                        <div class="c-attendance-table__range">
-
-                            <input type="text" id="break_start_2" name="break_start_2"
-                                class="c-attendance__input"
-                                value="{{ $attendanceDetail['break_start_2'] }}">
-
-                            <span class="c-attendance-table__separator">~</span>
-
-                            <input type="text" id="break_end_2" name="break_end_2"
-                                class="c-attendance__input"
-                                value="{{ $attendanceDetail['break_end_2'] }}">
-
-                        </div>
-                    </td>
-                </tr>
-
+                @endforeach
                 {{-- 備考 --}}
                 <tr class="c-attendance-table__row">
                     <th class="c-attendance-table__title c-attendance-table__title--remark">

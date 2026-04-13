@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Laravel\Fortify\Http\Requests\LoginRequest;
 
-class LoginUserRequest extends FormRequest
+class LoginUserRequest extends LoginRequest
 {
     public function authorize()
     {
@@ -19,7 +19,7 @@ class LoginUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'    => ['required', 'email'],
+            'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ];
     }
@@ -34,4 +34,13 @@ class LoginUserRequest extends FormRequest
         ];
     }
 
+    public function isAdminLogin(): bool
+    {
+        return $this->is('admin/*');
+    }
+
+    public function isStaffLogin(): bool
+    {
+        return !$this->is('admin/*');
+    }
 }

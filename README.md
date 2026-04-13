@@ -17,7 +17,7 @@
 - **CSS**
 - **Laravel Fortify（認証）**
 
->※ 各サービスの構成は `docker-compose.yml` を参照してください
+> ※ 各サービスの構成は `docker-compose.yml` を参照してください
 
 ## ◎ 画面キャプチャ (Screenshots)
 
@@ -50,6 +50,7 @@
 
 - スタッフからの修正申請を一覧管理し、承認フローを実行する画面です。
 - before/after 形式の比較表示や、承認完了時に申請内容を勤怠データへ即時反映する実務的なロジックを再現しています。
+
 ---
 
 ## ◎ 主な機能一覧（仕様書 US001〜US015 に準拠）
@@ -140,79 +141,76 @@
 `routes/web.php` で定義。スタッフの日常業務に関するルートです。
 
 - **勤怠操作・一覧**
-    - 出勤画面：`GET /attendance` (`AttendanceController@index`)
-    - 打刻処理：`POST /attendance` (`AttendanceController@action`)
-    - 勤怠一覧：`GET /attendance/list` (`AttendanceController@list`)
-    - 勤怠詳細：`GET /attendance/detail/{id}` (`AttendanceController@detail`)
+  - 出勤画面：`GET /attendance` (`AttendanceController@index`)
+  - 打刻処理：`POST /attendance` (`AttendanceController@action`)
+  - 勤怠一覧：`GET /attendance/list` (`AttendanceController@list`)
+  - 勤怠詳細：`GET /attendance/detail/{id}` (`AttendanceController@detail`)
 
 - **修正申請**
-    - 申請一覧：`GET /stamp_correction_request/list` (`CorrectionRequestController@requestList`)
-
+  - 申請一覧：`GET /stamp_correction_request/list` (`CorrectionRequestController@requestList`)
 
 **管理者（Admin）**
 
 `routes/admin.php` で定義。管理者専用 Guard により保護されています。
 
 - **基本管理**
-    - 日次勤怠一覧：`GET /admin/attendance/list` (`AdminAttendanceController@list`)
-    - 勤怠詳細：`GET /admin/attendance/{id}` (`AdminAttendanceController@detail`)
+  - 日次勤怠一覧：`GET /admin/attendance/list` (`AdminAttendanceController@list`)
+  - 勤怠詳細：`GET /admin/attendance/{id}` (`AdminAttendanceController@detail`)
 
 - **スタッフ管理**
-    - スタッフ一覧：`GET /admin/staff/list` (`AdminAttendanceController@staffList`)
-    - 個別月次一覧：`GET /admin/attendance/staff/{id}` (`AdminAttendanceController@staffAttendance`)
+  - スタッフ一覧：`GET /admin/staff/list` (`AdminAttendanceController@staffList`)
+  - 個別月次一覧：`GET /admin/attendance/staff/{id}` (`AdminAttendanceController@staffAttendance`)
 
 - **修正申請対応**
-    - 申請一覧：`GET /stamp_correction_request/admin/list` (`CorrectionController@requestList`)
-    - 承認・詳細：`GET /stamp_correction_request/approve/{attendance_correct_request_id}` (`CorrectionController@showApprove`)
+  - 申請一覧：`GET /stamp_correction_request/admin/list` (`CorrectionController@requestList`)
+  - 承認・詳細：`GET /stamp_correction_request/approve/{attendance_correct_request_id}` (`CorrectionController@showApprove`)
 
 ---
 
 ### ◆ コントローラー 一覧 (Controller)
 
-| コントローラー名                    | 役割                           |
-| ----------------------------------- | ---------------------------- |
-| AttendanceController.php            | 打刻・一覧・詳細の制御         |
-| CorrectionRequestController.php     | 修正申請の送信・一覧           |
-| AuthController.php                  | 登録・ログイン・メール認証     |
-| Admin/AdminAuthController.php       | 管理者専用ログイン             |
-| Admin/AdminAttendanceController.php | 各種勤怠一覧・詳細の管理       |
-| Admin/CorrectionController.php      | 修正申請の判定・承認           |
+| コントローラー名                    | 役割                     |
+| ----------------------------------- | ------------------------ |
+| AttendanceController.php            | 打刻・一覧・詳細の制御   |
+| CorrectionRequestController.php     | 修正申請の送信・一覧     |
+| Admin/AdminAttendanceController.php | 各種勤怠一覧・詳細の管理 |
+| Admin/CorrectionController.php      | 修正申請の判定・承認     |
 
 ### ◆業務ロジック・データ (Service / Model)
 
-| モデルファイル名        | 説明                        |
-| --------------------- | --------------------------- |
+| モデルファイル名      | 説明                          |
+| --------------------- | ----------------------------- |
 | User.php              | 属性・権限管理（Admin/Staff） |
 | Attendance.php        | 1日単位の勤怠レコード         |
-| BreakLog.php          | 休憩時間の記録               |
-| CorrectionRequest.php | 修正申請の差分保持           |
+| BreakLog.php          | 休憩時間の記録                |
+| CorrectionRequest.php | 修正申請の差分保持            |
 
-| サービス名                    | 役割（責務）                          |
-| ---------------------------- | ------------------------------------ |
-| AuthService.php              | 会員登録処理                          |
-| AttendanceService.php        | 打刻・勤怠計算の中心処理               |
-| CorrectionRequestService.php | 勤怠修正申請の作成・更新・承認処理      |
+| サービス名                   | 役割（責務）                       |
+| ---------------------------- | ---------------------------------- |
+| AttendanceService.php        | 打刻・勤怠計算の中心処理           |
+| CorrectionRequestService.php | 勤怠修正申請の作成・更新・承認処理 |
 
 ### ◆ プレゼンター 一覧（ Presenter / UIState）
 
- Presenters（表示用データ整形）
+Presenters（表示用データ整形）
 
-| ファイル名                             | 役割（責務）                         |
-| ------------------------------------- | ----------------------------------- |
-| AdminDailyAttendanceListPresenter.php | 管理者向け一覧整形                    |
+| ファイル名                            | 役割（責務）                           |
+| ------------------------------------- | -------------------------------------- |
+| AdminDailyAttendanceListPresenter.php | 管理者向け一覧整形                     |
+| AdminAttendanceDetailPresenter.php    | 管理者向け勤怠詳細（日時・状態）整形   |
 | AttendanceDetailPresenter.php         | 勤怠詳細（日時・状態）整形             |
-| AttendanceListPresenter.php           | スタッフ向け一覧整形                  |
+| AttendanceListPresenter.php           | スタッフ向け一覧整形                   |
 | AttendancePresenter.php               | 合計時間計算・ステータス加工           |
-| BasePresenter.php                     | プレゼンター共通基盤                  |
+| BasePresenter.php                     | プレゼンター共通基盤                   |
 | CalendarPresenter.php                 | カレンダーナビゲーション構築           |
 | CorrectionRequestPresenter.php        | 管理者向け申請・承認用整形             |
 | CorrectionRequestListPresenter.php    | スタッフ向け申請一覧整形               |
-| WorkMessagePresenter.php              | 状態に応じたステータスメッセージの選定  |
+| WorkMessagePresenter.php              | 状態に応じたステータスメッセージの選定 |
 
 UIState（UI の状態判定）
 
-| ファイル名             | 役割（責務）                |
-| --------------------- | -------------------------- |
+| ファイル名            | 役割（責務）                   |
+| --------------------- | ------------------------------ |
 | AttendanceUIState.php | 勤務/休憩/退勤のボタン表示判定 |
 
 ### ◆ ビュー 一覧（Bladeファイル）

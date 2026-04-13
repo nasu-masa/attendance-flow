@@ -17,7 +17,7 @@ class EmailVerificationTest extends TestCase
     {
         Notification::fake();
 
-        $this->post('/register', [
+        $this->post(route('register.post'), [
             'name'                  => 'test',
             'email'                 => 'verifytest@gmail.com',
             'password'              => 'test1234',
@@ -38,7 +38,7 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
-        ]);
+        ])->first();
 
         $this->actingAs($user);
 
@@ -49,7 +49,7 @@ class EmailVerificationTest extends TestCase
 
     public function test_メール認証サイトのメール認証を完了すると、勤怠登録画面に遷移する()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create()->first();
 
         $this->actingAs($user);
 

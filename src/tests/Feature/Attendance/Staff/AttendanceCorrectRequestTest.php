@@ -61,10 +61,12 @@ class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
             ->post(route('staff.attendance.detail.post', ['id' => $attendance->id]), [
                 'clock_in'      => '09:00',
                 'clock_out'     => '18:00',
-                'break_start_1' => '20:00',
+                'breaks'    => [
+                    ['start' => '19:00', 'end' => '20:00']
+                ],
                 'remarks'       => 'test',
             ])
-            ->assertSessionHasErrors(['break_start_1']);
+            ->assertSessionHasErrors(['breaks.0.start']);
 
         $this->get(route('staff.attendance.detail', ['id' => $attendance->id]))
             ->assertSee('休憩時間が不適切な値です');
@@ -78,11 +80,12 @@ class AttendanceCorrectRequestTest extends BaseStaffAttendanceTestCase
             ->post(route('staff.attendance.detail.post', ['id' => $attendance->id]), [
                 'clock_in'      => '09:00',
                 'clock_out'     => '18:00',
-                'break_start_1' => '12:00',
-                'break_end_1'   => '20:00',
+                'breaks'    => [
+                    ['start' => '12:00', 'end' => '20:00']
+                ],
                 'remarks'       => 'test',
             ])
-            ->assertSessionHasErrors(['break_end_1']);
+            ->assertSessionHasErrors(['breaks.0.end']);
 
         $this->get(route('staff.attendance.detail', ['id' => $attendance->id]))
             ->assertSee('休憩時間もしくは退勤時間が不適切な値です');

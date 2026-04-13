@@ -39,17 +39,20 @@ class AttendanceSeeder extends Seeder
 
     private function makeBeforeValue(Attendance $attendance)
     {
-        $break1 = $attendance->breakLogs->get(0);
-        $break2 = $attendance->breakLogs->get(1);
+        $format = function ($time) {
+            return $time ? date('H:i', strtotime($time)) : '';
+        };
 
         return [
-            'clock_in'      => optional($attendance->clock_in)->format('H:i'),
-            'clock_out'     => optional($attendance->clock_out)->format('H:i'),
-            'break_start_1' => optional($break1)->break_start?->format('H:i'),
-            'break_end_1'   => optional($break1)->break_end?->format('H:i'),
-            'break_start_2' => optional($break2)->break_start?->format('H:i'),
-            'break_end_2'   => optional($break2)->break_end?->format('H:i'),
-            'remarks'       => $attendance->remarks,
+            'clock_in'  => $format($attendance->clock_in),
+            'clock_out' => $format($attendance->clock_out),
+            'breaks'    => $attendance->breakLogs->map(function ($break) use ($format) {
+                return [
+                    'start' => $format($break->break_start),
+                    'end'   => $format($break->break_end),
+                ];
+            })->toArray(),
+            'remarks'   => $attendance->remarks,
         ];
     }
 
@@ -126,8 +129,8 @@ class AttendanceSeeder extends Seeder
                     'user_id'   => $id,
                     'date'      => $date->toDateString(),
                     'status'    => $status,
-                    'clock_in'  => $clockIn,
-                    'clock_out' => $clockOut,
+                    'clock_in'  => $clockIn?->format('H:i'),
+                    'clock_out' => $clockOut?->format('H:i'),
                     'remarks'   => $remarks
                 ]);
 
@@ -138,19 +141,19 @@ class AttendanceSeeder extends Seeder
 
                     BreakLog::create([
                         'attendance_id' => $attendance->id,
-                        'break_start'   => $breakStart,
-                        'break_end'     => $breakEnd
+                        'break_start'   => $breakStart->format('H:i'),
+                        'break_end'     => $breakEnd->format('H:i')
                     ]);
 
                     if (rand(1, 100) <= 3) {
 
-                        $breakStart2 = Carbon::parse($date->toDateString() . ' 15:00')->addMinutes(rand(0, 10));
-                        $breakEnd2   = $breakStart2->copy()->addMinutes(15);
+                        $breakStart = Carbon::parse($date->toDateString() . ' 15:00')->addMinutes(rand(0, 10));
+                        $breakEnd   = $breakStart->copy()->addMinutes(15);
 
                         BreakLog::create([
                             'attendance_id' => $attendance->id,
-                            'break_start'   => $breakStart2,
-                            'break_end'     => $breakEnd2
+                            'break_start'   => $breakStart->format('H:i'),
+                            'break_end'     => $breakEnd->format('H:i')
                         ]);
                     }
                 }
@@ -159,7 +162,7 @@ class AttendanceSeeder extends Seeder
                 if (in_array($status, ['normal', 'late']) && rand(1, 100) <= 10) {
 
                     $attendance->update([
-                        'clock_out' => $attendance->clock_out->copy()->addHour(),
+                        'clock_out' => Carbon::parse($attendance->clock_out)->copy()->addHour()->format('H:i'),
                     ]);
 
                     if (rand(1, 100) <= 70) {
@@ -230,11 +233,9 @@ class AttendanceSeeder extends Seeder
 
             $after = $before;
 
-            $break_end_2 = $before['break_end_2']
-                ? Carbon::parse($before['break_end_2'])
-                : null;
+            $secondBreakEnd = $before['breaks'][1]['end'] ?? null;
 
-            if ($break_end_2) {
+            if ($secondBreakEnd) {
                 $after['clock_out'] = '16:00';
             } else {
                 $after['clock_out'] = '14:00';
@@ -253,7 +254,13 @@ class AttendanceSeeder extends Seeder
                 'before_value'  => $before,
                 'after_value'   => $after,
                 'created_at'    => $requestDate->format('Y-m-d H:i:s'),
-            ])->fresh();
+            ]);
+
+            $attendance->update([
+                'clock_in'  => $after['clock_in'],
+                'clock_out' => $after['clock_out'],
+                'remarks'   => $after['remarks'],
+            ]);
         }
     }
 }

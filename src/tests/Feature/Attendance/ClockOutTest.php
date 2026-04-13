@@ -3,6 +3,7 @@
 namespace Tests\Feature\Attendance;
 
 use App\Models\Attendance;
+use Carbon\Carbon;
 use Tests\Feature\Attendance\Staff\BaseStaffAttendanceTestCase;
 
 class ClockOutTest extends BaseStaffAttendanceTestCase
@@ -54,8 +55,10 @@ class ClockOutTest extends BaseStaffAttendanceTestCase
 
         $attendance->refresh();
 
+        $clockIn = Carbon::parse($attendance->clock_in);
+
         $attendance->update([
-            'clock_out' => $attendance->clock_in->copy()->addHours(9)->addMinutes(43),
+            'clock_out' => $clockIn->copy()->addHours(9)->addMinutes(43)->format('H:i'),
         ]);
 
         $response = $this->get(route('staff.attendance.list'));
@@ -66,7 +69,7 @@ class ClockOutTest extends BaseStaffAttendanceTestCase
 
         $response->assertSeeInOrder([
             $dateText,
-            $attendance->clock_out->format('H:i'),
+            date('H:i', strtotime($attendance->clock_out)),
         ]);
     }
 }

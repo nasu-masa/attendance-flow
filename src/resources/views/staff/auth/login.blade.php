@@ -11,9 +11,9 @@
 @section('content')
 
 <div class="c-card">
-    <h2 class="c-card__title p-login__title">ログイン</h2>
+    <h1 class="c-card__title p-login__title">ログイン</h1>
 
-    <form action="{{ route('staff.login.post') }}" method="post">
+    <form action="{{ route('login.post') }}" method="post">
         @csrf
 
         {{-- メールアドレス --}}

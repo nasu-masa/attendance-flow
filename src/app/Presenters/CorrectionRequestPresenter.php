@@ -7,7 +7,7 @@ use App\Models\CorrectionRequest;
 class CorrectionRequestPresenter extends BasePresenter
 {
     /**
-     * 【理由】修正申請の after_value を優先して整形し、承認画面で必要な情報を統一フォーマットで提供するため。
+     * 【理由】修正申請を整形し、承認画面で必要な情報を統一フォーマットで提供するため。
      * 【制約】$req は attendance リレーションを持つ CorrectionRequest インスタンスである必要がある。
      * 【注意】after_value の欠損や不正値は空文字として扱われるため、元データとの整合性は呼び出し側に依存する。
      */
@@ -25,13 +25,15 @@ class CorrectionRequestPresenter extends BasePresenter
             'clock_in'      => self::formatTime($after['clock_in'] ?? null),
             'clock_out'     => self::formatTime($after['clock_out'] ?? null),
 
-            'break_start_1' => self::formatTime($after['break_start_1'] ?? null),
-            'break_end_1'   => self::formatTime($after['break_end_1'] ?? null),
+            'breaks' => collect($after['breaks'] ?? $attendance->breakLogs)->map(function ($break) {
+                return [
+                    'start' => self::formatTime($break['start'] ?? $break->break_start ?? null),
+                    'end'   => self::formatTime($break['end']   ?? $break->break_end   ?? null),
+                ];
+            })->values()->toArray(),
 
-            'break_start_2' => self::formatTime($after['break_start_2'] ?? null),
-            'break_end_2'   => self::formatTime($after['break_end_2'] ?? null),
 
-            'remarks'       => $req->remarks ?? '',
+            'remarks' => $after['remarks'] ?? ($req->remarks ?? ''),
 
             'is_pending'    => $req->isPending(),
         ];

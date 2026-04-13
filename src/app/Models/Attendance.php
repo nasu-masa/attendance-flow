@@ -32,8 +32,8 @@ class Attendance extends Model
 
     protected $casts = [
         'date'       => 'date',
-        'clock_in'   => 'datetime',
-        'clock_out'  => 'datetime',
+        'clock_in'   => 'string',
+        'clock_out'  => 'string',
         'is_holiday' => 'boolean',
         'is_absent'  => 'boolean'
     ];
@@ -49,27 +49,7 @@ class Attendance extends Model
 
     public function breakLogs()
     {
-        return $this->hasMany(BreakLog::class);
-    }
-
-    /**
-     * 【理由】休憩ログが最大2件である前提で、1件目を明示的に取得するため。
-     * 【制約】break_start の昇順で並ぶことを前提に最初の1件を参照する。
-     * 【注意】休憩が存在しない場合は null を返し、例外は発生しない。
-     */
-    public function break1()
-    {
-        return $this->hasOne(BreakLog::class)->orderBy('break_start')->limit(1);
-    }
-
-    /**
-     * 【理由】2件目の休憩ログを扱う業務仕様に合わせ、明示的に2件目を取得するため。
-     * 【制約】休憩ログが最大2件である前提で、2件目を skip(1) で参照する。
-     * 【注意】2件未満の場合は null を返し、欠損を正常系として扱う。
-     */
-    public function break2()
-    {
-        return $this->hasOne(BreakLog::class)->orderBy('break_start')->skip(1)->limit(1);
+        return $this->hasMany(BreakLog::class)->orderBy('break_start');
     }
 
     public function correctionRequests()
@@ -92,27 +72,6 @@ class Attendance extends Model
     /* ================================
         Accessors
     ================================ */
-
-    /**
-     * 【理由】休憩ログが最大2件である前提で、1件目を固定的に取得するため。
-     * 【制約】breakLogs が順序通りに並んでいることを前提としてインデックスを参照する。
-     * 【注意】休憩が存在しない場合は null を返し、例外は発生しない。
-     */
-    public function getBreak1Attribute()
-    {
-        return $this->breakLogs->get(0);
-    }
-
-    /**
-     * 【理由】2件目の休憩ログを明示的に扱う仕様に合わせるため。
-     * 【制約】休憩ログが最大2件である前提でインデックスを参照する。
-     * 【注意】2件未満の場合は null を返し、欠損を正常系として扱う。
-     */
-    public function getBreak2Attribute()
-    {
-        return $this->breakLogs->get(1);
-    }
-
     /**
      * 【理由】null を含む値を boolean に正規化し、判定の一貫性を保つため。
      * 【制約】is_holiday が存在しないレコードを許容する前提で false をデフォルトとする。
@@ -164,15 +123,14 @@ class Attendance extends Model
 
     /**
      * 【理由】詳細画面で必要となる関連を事前ロードし、表示時の追加クエリを防ぐため。
-     * 【制約】関連名（user, break1, break2, latestCorrectionRequest）が正しく定義されている必要がある。
+     * 【制約】関連名（user, breakLogs, latestCorrectionRequest）が正しく定義されている必要がある。
      * 【注意】関連が存在しない場合でも null が返るため、Presenter 側で null 安全に扱う必要がある。
      */
     public function scopeWithRelationsForDetails(Builder $query)
     {
         return $query->with([
             'user',
-            'break1',
-            'break2',
+            'breakLogs',
             'latestCorrectionRequest',
         ]);
     }

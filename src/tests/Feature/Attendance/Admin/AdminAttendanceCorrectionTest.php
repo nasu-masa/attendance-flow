@@ -3,6 +3,7 @@
 namespace Tests\Feature\Attendance\Admin;
 
 use App\Models\Attendance;
+use App\Models\BreakLog;
 use App\Models\CorrectionRequest;
 use Illuminate\Support\Str;
 
@@ -72,15 +73,21 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
             'date' => '2026-03-25',
         ]);
 
+        BreakLog::factory()->create([
+            'attendance_id' => $attendance->id,
+            'break_start'   => '12:00',
+            'break_end'     => '13:00',
+        ]);
+
         $request = CorrectionRequest::factory()->for($attendance)->create([
-            'remarks' => '会議のため',
             'after_value' => [
-                'clock_in'       => '09:00',
-                'clock_out'      => '20:00',
-                'break_start_1'  => '12:00',
-                'break_end_1'    => '13:00',
-                'break_start_2'  => '15:00',
-                'break_end_2'    => '15:15',
+                'clock_in'  => '09:00',
+                'clock_out' => '20:00',
+                'remarks'   => '会議のため',
+                'breaks'    => [
+                    ['start' => '12:00', 'end' => '13:00']
+                ],
+
             ],
             'status' => CorrectionRequest::STATUS_PENDING,
         ]);
@@ -97,9 +104,6 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
         $response->assertSee('12:00');
         $response->assertSee('13:00');
 
-        $response->assertSee('15:00');
-        $response->assertSee('15:15');
-
         $response->assertSee('会議のため');
 
         $response->assertSee('承認');
@@ -114,9 +118,20 @@ class AdminAttendanceCorrectionTest extends BaseAdminAttendanceTestCase
             ->for($user)
             ->for($attendance)
             ->pending()
-            ->create();
+            ->create([
+                'after_value' => [
+                    'clock_in'  => '09:00',
+                    'clock_out' => '18:00',
+                    'breaks'    => [
+                        ['start' => '12:00', 'end' => '13:00']
+                    ],
+                    'remarks'   => '修正後の備考',
+                ],
+            ]);
 
-        $this->patch(route('admin.attendance.correction.approve', $requestToApprove->id));
+        $response = $this->patch(route('admin.attendance.correction.approve', $requestToApprove->id));
+
+        $response->assertStatus(302);
 
         $this->assertDatabaseHas('correction_requests', [
             'id' => $requestToApprove->id,

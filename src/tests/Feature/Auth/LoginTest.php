@@ -15,12 +15,13 @@ class LoginTest extends TestCase
         return User::factory()->create([
             'email'    => 'test@gmail.com',
             'password' => bcrypt('test1234'),
+            'role'     => User::ROLE_STAFF,
         ]);
     }
 
     protected function postLogin(array $data)
     {
-        return $this->post(route('staff.login.post'), $data);
+        return $this->post(route('login.post'), $data);
     }
 
     protected function assertLoginError($field, $message, array $data)

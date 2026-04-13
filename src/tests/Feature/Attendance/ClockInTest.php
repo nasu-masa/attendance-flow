@@ -57,6 +57,6 @@ class ClockInTest extends BaseStaffAttendanceTestCase
 
         $response = $this->get(route('staff.attendance.list'));
 
-        $response->assertSee($attendance->fresh()->clock_in->format('H:i'));
+        $response->assertSee(date('H:i', strtotime($attendance->fresh()->clock_in)));
     }
 }

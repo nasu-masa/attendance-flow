@@ -29,8 +29,9 @@ class AttendanceDetailTest extends TestCase
 
         $attendance->breakLogs()->create([
             'attendance_id' => $attendance->id,
-            'break_start' => '12:00',
-            'break_end'   => '13:00',
+            'breaks'    => [
+                ['start' => '12:00', 'end' => '13:00']
+            ],
         ]);
 
         $response = $this->get(route('staff.attendance.detail', $attendance->id));
@@ -40,10 +41,10 @@ class AttendanceDetailTest extends TestCase
         $response->assertSee($attendance->date->isoFormat('YYYY年'));
         $response->assertSee($attendance->date->isoFormat('M月D日'));
 
-        $response->assertSee($attendance->clock_in->format('H:i'));
-        $response->assertSee($attendance->clock_out->format('H:i'));
+        $response->assertSee(date('H:i', strtotime($attendance->clock_in)));
+        $response->assertSee(date('H:i', strtotime($attendance->clock_out)));
 
-        $response->assertSee($attendance->break1->break_start->format('H:i'));
-        $response->assertSee($attendance->break1->break_end->format('H:i'));
+        $response->assertSee(date('H:i', strtotime($attendance->breakLogs->first()->break_start)));
+        $response->assertSee(date('H:i', strtotime($attendance->breakLogs->first()->break_end)));
     }
 }

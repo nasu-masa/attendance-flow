@@ -20,7 +20,7 @@ class AdminLoginTest extends TestCase
 
     protected function postAdminLogin(array $data)
     {
-        return $this->post(route('admin.login.post'), $data);
+        return $this->post(route('admin.login'), $data);
     }
 
     protected function assertAdminLoginError($field, $message, array $data)

@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\CorrectionRequest;
 use App\Models\User;
 use App\Presenters\BasePresenter;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CorrectionRequestService
@@ -45,57 +46,72 @@ class CorrectionRequestService
      */
     public function createCorrectionRequest(Attendance $attendance, array $data)
     {
-        $break1 = $attendance->breakLogs->get(0);
-        $break2 = $attendance->breakLogs->get(1);
+        $format = function($value) {
+            if (is_array($value)) {
+
+                $normalized = array_map(function ($breaks) {
+                    return [
+                        'end'   => isset($breaks['end'])   ? date('H:i', strtotime($breaks['end']))   : '',
+                        'start' => isset($breaks['start']) ? date('H:i', strtotime($breaks['start'])) : '',
+                    ];
+                }, $value);
+                return json_encode($normalized);
+            }
+            return ($value && preg_match('/^\d{2}:\d{2}/', $value)) ? date('H:i', strtotime($value)) : (string)$value;
+        };
 
         $before = [
-            'clock_in'      => BasePresenter::formatTime($attendance->clock_in),
-            'clock_out'     => BasePresenter::formatTime($attendance->clock_out),
-            'break_start_1' => BasePresenter::formatTime($break1?->break1?->break_start),
-            'break_end_1'   => BasePresenter::formatTime($break1?->break1?->break_end),
-            'break_start_2' => BasePresenter::formatTime($break2?->break2?->break_start),
-            'break_end_2'   => BasePresenter::formatTime($break2?->break2?->break_end),
-            'remarks'       => $attendance->remarks,
+            'clock_in'  => BasePresenter::formatTime($attendance->clock_in),
+            'clock_out' => BasePresenter::formatTime($attendance->clock_out),
+            'breaks'    => $attendance->breakLogs->map(function ($break) {
+                return [
+                    'start' => BasePresenter::formatTime($break->break_start),
+                    'end'   => BasePresenter::formatTime($break->break_end),
+                ];
+            })->toArray(),
+            'remarks'   => $attendance->remarks,
         ];
 
-        $after = array_intersect_key($data, $before);
-
-        $toString = fn($value) => is_null($value)
-            ? ''
-            : (string)$value;
-
-        $requestValueString = array_map($toString, $after);
+        $after = [
+            'clock_in'  => $data['clock_in']  ?: $before['clock_in'],
+            'clock_out' => $data['clock_out'] ?: $before['clock_out'],
+            'breaks'    => $data['breaks']    ?? $before['breaks'],
+            'remarks'   => $data['remarks']   ?? $before['remarks'],
+        ];
 
         $latestApproved = CorrectionRequest::where('attendance_id', $attendance->id)
             ->approved()->latest()->first();
 
-        if ($latestApproved) {
-            $baseValue = array_map($toString, $latestApproved->after_value);
-            $errorMessage = '承認済みの内容と同じため再申請できません';
-        } else {
-            $baseValue = array_map($toString, $before);
-            $errorMessage = '変更がありません 修正申請を送信できません';
-        }
+        $baseValues = $latestApproved ? $latestApproved->after_value : $before;
 
-        $diffKeys = array_keys((new CorrectionRequest)->diff($baseValue, $requestValueString));
+        $baseComparison = array_map($format, $baseValues);
+        $requestComparison = array_map($format, $after);
+
+        $diffKeys = [];
+        foreach ($requestComparison as $key => $value) {
+            if ($value !== ($baseComparison[$key] ?? null)) {
+                $diffKeys[] = $key;
+            }
+        }
 
         if (empty($diffKeys)) {
+            $errorMessage = $latestApproved
+            ? '承認済みの内容と同じため再申請できません'
+            : '変更がありません 修正申請を送信できません';
+
             throw new \Exception($errorMessage);
         }
-
-        $requestType = count($diffKeys) === 1 ? $diffKeys[0] : 'multiple';
 
         return CorrectionRequest::create([
             'user_id'       => $attendance->user_id,
             'attendance_id' => $attendance->id,
-            'request_type'  => $requestType,
+            'request_type'  => count($diffKeys) === 1 ? $diffKeys[0] : 'multiple',
             'before_value'  => $before,
             'after_value'   => $after,
             'status'        => CorrectionRequest::STATUS_PENDING,
             'remarks'       => $data['remarks'] ?? null,
         ]);
     }
-
 
     /**
      * 【理由】ID から修正申請を取得し、承認ロジックを共通メソッドへ委譲することで処理の一貫性を保つため。
@@ -125,26 +141,21 @@ class CorrectionRequestService
         DB::transaction(function () use ($attendance, $after, $request, $approver) {
 
             $attendance->update([
-                'clock_in'  => $after['clock_in'],
-                'clock_out' => $after['clock_out'],
+                'clock_in'  => Carbon::parse($after['clock_in'])->format('H:i'),
+                'clock_out' => Carbon::parse($after['clock_out'])->format('H:i'),
                 'remarks'   => $after['remarks'],
             ]);
 
-            $break1 = $attendance->breakLogs->get(0);
-            if ($break1) {
-                $break1->update([
-                    'break_start' => $after['break_start_1'],
-                    'break_end'   => $after['break_end_1'],
+            $attendance->breakLogs()->delete();
+
+            foreach ($after['breaks'] as $break) {
+                $attendance->breakLogs()->create([
+                    'break_start' => $break['start'],
+                    'break_end'   => $break['end'],
                 ]);
             }
 
-            $break2 = $attendance->breakLogs->get(1);
-            if ($break2) {
-                $break2->update([
-                    'break_start' => $after['break_start_2'],
-                    'break_end'   => $after['break_end_2'],
-                ]);
-            }
+            $attendance->refresh();
 
             $request->update([
                 'status'      => CorrectionRequest::STATUS_APPROVED,

@@ -38,8 +38,9 @@ class AdminAttendanceDetailTest extends BaseAdminAttendanceTestCase
         $response = $this->patch($this->detailUrl, [
             'clock_in'    => '19:00',
             'clock_out'   => '18:00',
-            'break_start' => '12:00',
-            'break_end'   => '13:00',
+            'breaks'    => [
+                ['start' => '19:00', 'end' => '20:00']
+            ],
         ]);
 
         $response->assertSessionHasErrors([
@@ -50,38 +51,41 @@ class AdminAttendanceDetailTest extends BaseAdminAttendanceTestCase
     public function test_休憩開始時間が退勤時間より後になっている場合、エラーメッセージが表示される()
     {
         $response = $this->patch($this->detailUrl, [
-            'clock_in'      => '09:00',
-            'clock_out'     => '18:00',
-            'break_start_1' => '19:00',
-            'break_end_1'   => '20:00',
+            'clock_in'  => '09:00',
+            'clock_out' => '18:00',
+            'breaks'    => [
+                ['start' => '19:00', 'end' => '20:00']
+            ],
         ]);
 
         $response->assertSessionHasErrors([
-            'break_start_1' => '休憩時間が不適切な値です',
+            'breaks.0.start' => '休憩時間が不適切な値です',
         ]);
     }
 
     public function test_休憩終了時間が退勤時間より後になっている場合、エラーメッセージが表示される()
     {
         $response = $this->patch($this->detailUrl, [
-            'clock_in'      => '09:00',
-            'clock_out'     => '18:00',
-            'break_start_1' => '18:00',
-            'break_end_1'   => '19:00',
+            'clock_in'  => '09:00',
+            'clock_out' => '18:00',
+            'breaks'    => [
+                ['start' => '19:00', 'end' => '20:00']
+            ],
         ]);
 
         $response->assertSessionHasErrors([
-            'break_end_1' => '休憩時間もしくは退勤時間が不適切な値です',
+            'breaks.0.end' => '休憩時間もしくは退勤時間が不適切な値です',
         ]);
     }
 
     public function test_備考欄が未入力の場合のエラーメッセージが表示される()
     {
         $response = $this->patch($this->detailUrl, [
-            'clock_in'    => '09:00',
-            'clock_out'   => '18:00',
-            'break_start' => '12:00',
-            'break_end'   => '13:00',
+            'clock_in'  => '09:00',
+            'clock_out' => '18:00',
+            'breaks'    => [
+                ['start' => '19:00', 'end' => '20:00']
+            ],
             'remarks'     => ''
         ]);
 

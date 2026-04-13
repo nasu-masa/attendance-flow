@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CorrectAttendanceRequest;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Presenters\AdminAttendanceDetailPresenter;
 use App\Presenters\AdminDailyAttendanceListPresenter;
-use App\Presenters\AttendanceDetailPresenter;
 use App\Presenters\CalendarPresenter;
 use App\Services\AttendanceService;
 use App\Support\Export\AttendanceCsvExporter;
@@ -51,7 +51,7 @@ class AdminAttendanceController extends Controller
     {
         $attendance = Attendance::withRelationsForDetails()->findOrFail($attendanceId);
 
-        $attendanceDetail = AttendanceDetailPresenter::make($attendance, true);
+        $attendanceDetail = AdminAttendanceDetailPresenter::make($attendance);
 
         return view('admin.attendance.detail', compact('attendance', 'attendanceDetail'));
     }

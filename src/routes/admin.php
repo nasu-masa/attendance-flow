@@ -1,27 +1,24 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAttendanceController;
-use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CorrectionController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 // =====================================
 //  管理者：認証
 // =====================================
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->middleware('guest:admin')->group(function () {
 
-    Route::get('/login', [AdminAuthController::class, 'showLogin'])
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])
         ->middleware('guest:admin')
         ->name('login');
 
-    Route::post('/login', [AdminAuthController::class, 'login'])
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware(['guest:admin'])
         ->name('login.post');
-
-    Route::post('/logout', [AdminAuthController::class, 'logout'])
-        ->middleware('auth:admin')
-        ->name('logout');
 });
 
 
@@ -29,11 +26,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 //  管理者：勤怠
 // =====================================
 
-Route::middleware(['auth:admin', AdminMiddleware::class])->name('admin.')->group(function () {
+Route::middleware(['auth:admin', AdminMiddleware::class])->group(function () {
 
     Route::prefix('admin')->group(function () {
-        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
-
         Route::get('/attendance/list', [AdminAttendanceController::class, 'list'])
             ->name('attendance.list');
 
@@ -51,6 +46,9 @@ Route::middleware(['auth:admin', AdminMiddleware::class])->name('admin.')->group
 
         Route::get('/attendance/staff/{id}/csv', [AdminAttendanceController::class, 'exportCsv'])
             ->name('attendance.staff.csv');
+
+        Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
     });
 
     Route::get('/stamp_correction_request/admin/list', [CorrectionController::class, 'requestList'])

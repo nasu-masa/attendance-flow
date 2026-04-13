@@ -1,19 +1,27 @@
 <?php
 
 use App\Http\Controllers\Staff\AttendanceController;
-use App\Http\Controllers\Staff\AuthController;
 use App\Http\Controllers\Staff\CorrectionRequestController;
 
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 // =====================================
 //  一般ユーザー：認証
 // =====================================
 
-Route::post('/register', [AuthController::class, 'store'])->name('register');
-Route::post('/login', [AuthController::class, 'login'])->name('staff.login.post');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.post');
+
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.post');
+});
 
 // =====================================
 //  一般ユーザー：勤怠
@@ -39,7 +47,7 @@ Route::middleware(['auth', 'verified', 'staff'])->group(function () {
     Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'requestList'])
         ->name('staff.attendance.correction.list');
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
 // =====================================
@@ -67,5 +75,15 @@ Route::post('/email/resend', function (Request $request) {
 // ===========================================
 
 Route::get('/', function () {
-    return redirect()->route('staff.attendance.index');
+    if (Auth::check()) {
+        $user = Auth::guard('admin')->user() ?? Auth::guard('web')->user();
+
+        if ($user->role === \App\Models\User::ROLE_ADMIN) {
+            return redirect()->route('admin.attendance.list');
+        }
+
+        return redirect()->route('staff.attendance.index');
+    }
+
+    return redirect()->route('login');
 });

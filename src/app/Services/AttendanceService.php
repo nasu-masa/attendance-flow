@@ -161,19 +161,16 @@ class AttendanceService
             'remarks'   => $request->remarks,
         ]);
 
-        $break1 = $attendance->breakLogs()->orderBy('id')->first();
-        if ($break1) {
-            $break1->update([
-                'break_start' => $request->break_start_1,
-                'break_end'   => $request->break_end_1,
-            ]);
-        }
+        $breaks = $request->breaks ?? [];
 
-        $break2 = $attendance->breakLogs()->orderBy('id')->skip(1)->first();
-        if ($break2) {
-            $break2->update([
-                'break_start' => $request->break_start_2,
-                'break_end'   => $request->break_end_2,
+        foreach ($attendance->breakLogs as $index => $breakLog) {
+            if (!isset($breaks[$index])) {
+                continue;
+            }
+
+            $breakLog->update([
+                'break_start' => $breaks[$index]['start'],
+                'break_end'   => $breaks[$index]['end'],
             ]);
         }
     }

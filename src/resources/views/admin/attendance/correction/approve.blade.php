@@ -70,49 +70,33 @@
                     </td>
                 </tr>
 
-                {{-- 休憩1 --}}
+                {{-- 休憩 --}}
+                @foreach ($correctionRequestDetail['breaks'] as $break)
                 <tr class="c-attendance-table__row">
                     <th class="c-attendance-table__title c-attendance-table__title--break">
                         <label class="c-attendance__label">
-                            休憩
+                            @if ($loop->first)
+                                休憩
+                            @else
+                                休憩{{ $loop->iteration }}
+                            @endif
                         </label>
                     </th>
                     <td class="c-attendance-table__content">
                         <div class="c-attendance-table__range">
                             <p class="c-attendance__text">
-                                {{ $correctionRequestDetail['break_start_1'] }}
+                                {{ $break['start'] }}
                             </p>
 
                             <span class="c-attendance-table__separator">~</span>
 
                             <p class="c-attendance__text">
-                                {{ $correctionRequestDetail['break_end_1'] }}
+                                {{ $break['end'] }}
                             </p>
                         </div>
                     </td>
                 </tr>
-
-                {{-- 休憩2 --}}
-                <tr class="c-attendance-table__row">
-                    <th class="c-attendance-table__title c-attendance-table__title--break">
-                        <label class="c-attendance__label">
-                            休憩２
-                        </label>
-                    </th>
-                    <td class="c-attendance-table__content">
-                        <div class="c-attendance-table__range">
-                            <p class="c-attendance__text">
-                                {{ $correctionRequestDetail['break_start_2'] }}
-                            </p>
-
-                            <span class="c-attendance-table__separator">~</span>
-
-                            <p class="c-attendance__text">
-                                {{ $correctionRequestDetail['break_end_2'] }}
-                            </p>
-                        </div>
-                    </td>
-                </tr>
+                @endforeach
 
                 {{-- 備考 --}}
                 <tr class="c-attendance-table__row">

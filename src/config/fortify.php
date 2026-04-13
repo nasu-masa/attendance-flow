@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Requests\Auth\LoginUserRequest;
+use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Providers\RouteServiceProvider;
 use Laravel\Fortify\Features;
 
@@ -74,7 +76,7 @@ return [
     |
     */
 
-    'home' => RouteServiceProvider::HOME,
+    'home' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -155,6 +157,10 @@ return [
             'confirmPassword' => true,
             // 'window' => 0,
         ]),
+    ],
+
+    'requests' => [
+        'register' => RegisterUserRequest::class,
     ],
 
 ];

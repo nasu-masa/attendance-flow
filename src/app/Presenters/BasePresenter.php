@@ -26,10 +26,9 @@ abstract class BasePresenter
     public static function formatTime(null|string|Carbon $value): string
     {
         if (!$value) return '';
+
         try {
-            return $value instanceof Carbon
-                ? $value->format('H:i')
-                : Carbon::parse($value)->format('H:i');
+            return Carbon::parse($value)->format('H:i');
         } catch (\Exception) {
             return '';
         }
@@ -59,7 +58,9 @@ abstract class BasePresenter
             }
         }
 
-        if ($format === 'H:i') return self::formatTime($value);
+        if ($format === 'H:i') {
+            return self::formatTime($value);
+        }
 
         return (string)($value ?? '');
     }
